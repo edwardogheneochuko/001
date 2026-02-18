@@ -16,7 +16,7 @@ const App = () => {
     const timer = setTimeout(() => {
       setShowContent(true)
       setBlurVideo(true)
-    }, 5000) // 5 seconds
+    }, 5000) 
 
     return () => clearTimeout(timer)
   }, [])

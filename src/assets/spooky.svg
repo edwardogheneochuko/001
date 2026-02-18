@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="spooky scene">
+  <defs>
+    <radialGradient id="g1" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fff7d6" stop-opacity="1" />
+      <stop offset="60%" stop-color="#ffd9b8" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- moon -->
+  <circle cx="620" cy="110" r="72" fill="#fff9d9" />
+  <circle cx="640" cy="95" r="8" fill="#000" opacity="0.06" />
+
+  <!-- distant hills -->
+  <path d="M0 350 C120 300, 240 380, 400 340 C560 300, 700 380, 800 340 L800 450 L0 450 Z" fill="#060606" />
+
+  <!-- bats -->
+  <g fill="#050505" transform="translate(40,20)">
+    <path d="M220 130 C200 120, 190 100, 170 96 C190 110, 200 120, 220 130 Z" />
+    <path d="M160 110 C150 100, 130 96, 110 102 C130 100, 145 108, 160 110 Z" />
+    <path d="M320 90 C300 80, 280 78, 260 86 C280 82, 300 88, 320 90 Z" />
+  </g>
+
+  <!-- spooky silhouette tree -->
+  <g transform="translate(120,180) scale(0.9)">
+    <path d="M40 220 L58 220 L60 150 C66 130, 90 110, 94 88 C72 100, 54 90, 44 80 C36 92, 10 106, 6 128 C14 140, 26 150, 32 168 L34 220 Z" fill="#000" />
+  </g>
+
+  <!-- subtle glow over moon -->
+  <ellipse cx="620" cy="110" rx="160" ry="90" fill="url(#g1)" opacity="0.18" />
+</svg>
