@@ -19,7 +19,7 @@ const PumpkinIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Page1 = () => {
   return (
-    <div id="home" className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
+    <div id="abyss" className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
       {/* Ambient red glow overlay */}
       <div className="absolute inset-0 bg-gradient-radial from-red-900/15 via-transparent to-black pointer-events-none" />
 
@@ -72,7 +72,7 @@ const Page1 = () => {
           transition={{ duration: 3.5, repeat: Infinity }}
           style={{ textShadow: '0 0 20px rgba(0, 0, 0, 0.9)' }}
         >
-          Enter if you dare...
+          Project 001: A Journey into the Void
         </motion.p>
 
         {/* CTA Button with scary effects */}

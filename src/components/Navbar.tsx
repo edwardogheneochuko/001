@@ -9,10 +9,10 @@ const Navbar = ({ isVisible }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navItems = [
-    { label: 'Home', id: 'home' },
-    { label: 'Info', id: 'info' },
-    { label: 'Designs', id: 'designs' },
-    { label: '001', id: '001' },
+    { label: 'THE ABYSS', id: 'abyss' },
+    { label: 'WHISPERS', id: 'whispers' },
+    { label: 'NIGHTMARES', id: 'nightmares' },
+    { label: 'THE VOID', id: 'void' },
   ]
 
   const handleNavClick = (id: string) => {
