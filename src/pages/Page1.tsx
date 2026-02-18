@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 
-
 const PumpkinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
@@ -20,54 +19,122 @@ const PumpkinIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Page1 = () => {
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-black overflow-hidden relative">
-      
+    <div id="home" className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
+      {/* Ambient red glow overlay */}
+      <div className="absolute inset-0 bg-gradient-radial from-red-900/15 via-transparent to-black pointer-events-none" />
+
+      {/* Flickering Window Effect - updated */}
       <motion.div
-        className="absolute w-full h-full bg-black"
-        animate={{ opacity: [0.8, 1, 0.7, 1] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        className="absolute w-full h-full bg-gradient-to-br from-black/80 via-red-950/10 to-black/80"
+        animate={{ opacity: [0.7, 0.9, 0.6, 0.9] }}
+        transition={{ duration: 3, repeat: Infinity }}
       />
 
+      {/* Main Content */}
       <motion.div
-        className="relative flex flex-col items-center justify-center text-center px-4"
+        className="relative flex flex-col items-center justify-center text-center px-4 h-full"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
       >
+        {/* Pumpkin Icon - Scary version */}
         <motion.div
-          className="mb-6 text-orange-500"
-          animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.2, 1, 1.1] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="mb-12 text-red-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
+          animate={{ 
+            rotate: [0, 15, -15, 0], 
+            scale: [1, 1.3, 0.95, 1.2],
+            filter: ["brightness(1)", "brightness(1.5)", "brightness(0.8)", "brightness(1.2)"]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity }}
         >
-          <PumpkinIcon className="w-20 h-20" />
+          <PumpkinIcon className="w-32 h-32" />
         </motion.div>
 
+        {/* Main Title */}
         <motion.h1
-          className="text-5xl font-bold text-red-600 drop-shadow-lg mb-4"
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 2, -2, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
+          className="text-7xl sm:text-8xl font-black mb-6 tracking-widest text-red-500"
+          animate={{ 
+            scale: [1, 1.15, 0.95, 1.1],
+            letterSpacing: ["3px", "5px", "3px", "4px"]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity }}
+          style={{ 
+            textShadow: '0 0 40px rgba(239, 68, 68, 0.9), 0 0 80px rgba(0, 0, 0, 0.8), 0 20px 60px rgba(0,0,0,0.7)' 
+          }}
         >
-          Welcome
+          WELCOME
         </motion.h1>
 
+        {/* Subtitle with scary vibe */}
         <motion.p
-          className="text-xl text-white drop-shadow-md"
-          animate={{ opacity: [0.7, 1, 0.5, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
+          className="text-2xl sm:text-3xl text-gray-300 drop-shadow-lg mb-12 italic font-light"
+          animate={{ opacity: [0.6, 1, 0.4, 1], scale: [1, 1.05, 0.98, 1.02] }}
+          transition={{ duration: 3.5, repeat: Infinity }}
+          style={{ textShadow: '0 0 20px rgba(0, 0, 0, 0.9)' }}
         >
           Enter if you dare...
         </motion.p>
+
+        {/* CTA Button with scary effects */}
+        <motion.button
+          className="px-12 py-4 bg-gradient-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
+          border-2 border-red-600/70 hover:border-red-400 rounded-lg font-bold text-red-300 hover:text-red-100
+          transition-all duration-300 text-lg drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]
+          hover:drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
+          animate={{ 
+            boxShadow: [
+              "0 0 10px rgba(239, 68, 68, 0.3)",
+              "0 0 30px rgba(239, 68, 68, 0.6)",
+              "0 0 10px rgba(239, 68, 68, 0.3)"
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity }}
+          whileHover={{ scale: 1.1, rotateZ: 2 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          • PROCEED •
+        </motion.button>
+
+        {/* Warning text */}
+        <motion.div
+          className="mt-16 text-red-600/90 font-mono tracking-[3px] text-sm sm:text-base"
+          animate={{ opacity: [0.5, 1, 0.3, 1] }}
+          transition={{ duration: 2.5, repeat: Infinity }}
+        >
+          ⚠ BEWARE OF WHAT LIES AHEAD ⚠
+        </motion.div>
       </motion.div>
 
+      {/* Floating haunting orbs - enhanced */}
       <motion.div
-        className="absolute w-32 h-32 bg-white rounded-full opacity-10 blur-2xl top-20 left-10"
-        animate={{ y: [0, 20, 0], x: [0, 10, -10, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute w-40 h-40 bg-gradient-to-br from-red-900/20 to-red-950/10 rounded-full blur-3xl top-1/4 left-10"
+        animate={{ 
+          y: [0, 40, 0], 
+          x: [0, 20, -10, 0],
+          scale: [1, 1.3, 1, 1.2]
+        }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute w-24 h-24 bg-white rounded-full opacity-10 blur-2xl bottom-20 right-20"
-        animate={{ y: [0, -20, 0], x: [0, -10, 10, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute w-32 h-32 bg-gradient-to-tl from-red-900/15 to-transparent rounded-full blur-3xl bottom-1/3 right-20"
+        animate={{ 
+          y: [0, -30, 0], 
+          x: [0, -15, 10, 0],
+          scale: [1, 1.2, 1]
+        }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* Decorative corner glows */}
+      <motion.div
+        className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-red-900/10 via-transparent to-transparent rounded-full blur-2xl"
+        animate={{ opacity: [0.3, 0.7, 0.3] }}
+        transition={{ duration: 4, repeat: Infinity }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-red-900/10 via-transparent to-transparent rounded-full blur-2xl"
+        animate={{ opacity: [0.2, 0.6, 0.2] }}
+        transition={{ duration: 5, repeat: Infinity }}
       />
     </div>
   );
