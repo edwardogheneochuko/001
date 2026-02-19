@@ -1,5 +1,11 @@
 
-export const scaryContent = [
+type ScaryItem = {
+  title: string;
+  description: string;
+};
+
+
+export const scaryContent: ScaryItem[] = [
   {
     title: "Welcome",
     description: "Fvck around and find out!..",
