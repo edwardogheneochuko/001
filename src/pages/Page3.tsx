@@ -25,7 +25,7 @@ const AudioControl = ({ audioRef }: { audioRef: RefObject<HTMLAudioElement | nul
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div id='nightmares' className="flex items-center gap-4">
       <button
         onClick={togglePlay}
         className="px-4 py-2 bg-red-900/60 hover:bg-red-800 text-red-100 rounded-md border border-red-700"
