@@ -80,7 +80,7 @@ const Page1 = () => {
           className="px-12 py-4 bg-gradient-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
           border-2 border-red-600/70 hover:border-red-400 rounded-lg font-bold text-red-300 hover:text-red-100
           transition-all duration-300 text-lg drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]
-          hover:drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
+          hover:drop-shadow-[0_0_30px_rgba(239,68,68,0.8)] cursor-pointer"
           animate={{ 
             boxShadow: [
               "0 0 10px rgba(239, 68, 68, 0.3)",
