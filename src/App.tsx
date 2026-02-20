@@ -10,12 +10,14 @@ import './App.css'
 const App = () => {
   const [showContent, setShowContent] = useState(false)
   const [blurVideo, setBlurVideo] = useState(false)
-  const videoRef = useRef(null)
+  const videoRef = useRef<HTMLVideoElement | null>(null)
 
   useEffect(() => {
     const playVideo = async () => {
       try {
-        await videoRef.current?.play()
+        if (videoRef.current) {
+          await videoRef.current.play()
+        }
       } catch (error) {
         console.log('Autoplay blocked:', error)
       }
@@ -47,7 +49,6 @@ const App = () => {
         preload="auto"
       >
         <source src={pumpkin} type="video/mp4" />
-        Your browser does not support the video tag.
       </video>
 
       {showContent && (
