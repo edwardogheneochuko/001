@@ -6,6 +6,7 @@ import Page2 from './pages/Page2'
 import Page3 from './pages/Page3'
 import Page4 from './pages/Page4'
 import './App.css'
+import Footer from './components/Footer'
 
 const App = () => {
   const [showContent, setShowContent] = useState(false)
@@ -39,9 +40,8 @@ const App = () => {
 
       <video
         ref={videoRef}
-        className={`fixed top-0 left-0 w-full h-full object-cover transition-all duration-1000 ${
-          blurVideo ? 'blur-sm' : ''
-        }`}
+        className={`fixed top-0 left-0 w-full h-full object-cover transition-all duration-1000 ${blurVideo ? 'blur-sm' : ''
+          }`}
         autoPlay
         loop
         muted
@@ -57,6 +57,7 @@ const App = () => {
           <Page2 />
           <Page3 />
           <Page4 />
+          <Footer />
         </div>
       )}
     </div>
