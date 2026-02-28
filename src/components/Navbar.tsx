@@ -91,7 +91,7 @@ const Navbar = ({ isVisible }: NavbarProps) => {
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="text-red-500 hover:text-red-300 transition-all duration-300 
           drop-shadow-[0_0_12px_rgba(239,68,68,0.4)] hover:drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]
-          transform hover:scale-125 active:scale-95"
+          transform hover:scale-125 active:scale-95 cursor-pointer"
         >
           {mobileMenuOpen ? (
             <X size={32} className="animate-spin" style={{ animationDuration: '300ms' }} />
