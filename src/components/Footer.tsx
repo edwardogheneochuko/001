@@ -4,7 +4,7 @@ import { pumpkin } from '@lucide/lab';
 
 const Footer = () => {
   return (
-    <footer className="ml-3 md:ml-7 p-6 text-gray-300 tracking-widest">
+    <footer className="mt-8 md:mt-40 ml-3 md:ml-7 p-6 text-gray-300 tracking-widest">
 
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 w-3/4 text-xs uppercase">
         <div className="md:col-span-3 lg:col-span-1 text-red-700 animate-pulse">
@@ -25,7 +25,6 @@ const Footer = () => {
 
       <div className="flex flex-col md:flex-row md:justify-between md:items-start w-full lg:w-3/4 gap-6 md:gap-0">
         
-        {/* Pumpkin */}
         <div className="flex justify-start border border-red-900 w-fit p-3 rounded-full shadow-[0_0_15px_rgba(255,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,0,0,0.8)] transition duration-500">
           <Icon 
             iconNode={pumpkin} 
