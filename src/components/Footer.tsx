@@ -4,46 +4,59 @@ import { pumpkin } from '@lucide/lab';
 
 const Footer = () => {
   return (
-    <footer className="ml-3 md:ml-7 p-4 text-white">
-      {/* Top grid */}
-      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 w-3/4">
-        <div className="md:col-span-3 lg:col-span-1">001</div>
-        <div>Footer Content 2</div>
-        <div>Footer Content 3</div>
-        <div>Footer Content 4</div>
+    <footer className="ml-3 md:ml-7 p-6 text-gray-300 tracking-widest">
+
+      <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 w-3/4 text-xs uppercase">
+        <div className="md:col-span-3 lg:col-span-1 text-red-700 animate-pulse">
+          001
+        </div>
+        <div className="hover:text-red-500 transition duration-300">
+          Footer Content 2
+        </div>
+        <div className="hover:text-red-500 transition duration-300">
+          Footer Content 3
+        </div>
+        <div className="hover:text-red-500 transition duration-300">
+          Footer Content 4
+        </div>
       </div>
 
-      {/* Divider */}
-      <hr className="border-t border-amber-50 my-6 w-full lg:w-3/4" />
+      <hr className="border-t border-gray-700 my-8 w-full opacity-40" />
 
-      {/* Bottom section */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-start w-full lg:w-3/4 gap-6 md:gap-0">
         
-        {/* Left: Pumpkin */}
-        <div className="flex justify-start">
-              <Icon iconNode={pumpkin} className="w-12 h-12 text-orange-500"/>
+        {/* Pumpkin */}
+        <div className="flex justify-start border border-red-900 w-fit p-3 rounded-full shadow-[0_0_15px_rgba(255,0,0,0.4)] hover:shadow-[0_0_25px_rgba(255,0,0,0.8)] transition duration-500">
+          <Icon 
+            iconNode={pumpkin} 
+            className="w-10 h-10 text-orange-600 hover:text-red-600 transition duration-500" 
+          />
         </div>
 
-        {/* Right: Links + Socials + © */}
-        <div className="flex flex-col md:items-end gap-4">
-          {/* Links */}
-          <ul className="flex flex-col md:flex-row gap-2 md:gap-4 text-sm">
-            <li>Sitemap</li>
-            <li>Terms of service</li>
-            <li>Privacy policy</li>
+        <div className="flex flex-col md:items-end gap-6">
+
+          <ul className="flex flex-col md:flex-row gap-3 md:gap-6 text-xs text-gray-500 uppercase tracking-wider">
+            <li className="hover:text-red-600 cursor-pointer transition duration-300">Sitemap</li>
+            <li className="hover:text-red-600 cursor-pointer transition duration-300">Terms of service</li>
+            <li className="hover:text-red-600 cursor-pointer transition duration-300">Privacy policy</li>
           </ul>
 
-          {/* Social icons */}
-          <ul className="flex gap-4 text-sm">
-            <li><Youtube className="w-5 h-5" /></li>
-            <li><Github className="w-5 h-5" /></li>
-            <li><Linkedin className="w-5 h-5" /></li>
+          <ul className="flex gap-6 text-gray-700 duration-300">
+            <li className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
+              <Youtube className="w-5 h-5" />
+            </li>
+            <li className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
+              <Github className="w-5 h-5" />
+            </li>
+            <li className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
+              <Linkedin className="w-5 h-5" />
+            </li>
           </ul>
 
-          {/* Copyright */}
-          <div className="text-white text-sm mt-1">
+          <div className="text-xs text-gray-600 tracking-widest opacity-70">
             © 2026 zerozerOne
           </div>
+
         </div>
       </div>
     </footer>
