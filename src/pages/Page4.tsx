@@ -7,7 +7,6 @@ const Page4 = () => {
       id="void"
       className="w-screen h-screen relative flex items-center justify-center overflow-hidden"
     >
-      {/* Background Layers */}
       <img
         src={smoke}
         alt="smoke"
@@ -20,10 +19,8 @@ const Page4 = () => {
         className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-overlay"
       />
 
-      {/* Dark overlay without background color */}
       <div className="absolute inset-0 backdrop-brightness-50"></div>
 
-      {/* Content */}
       <div className="relative text-center text-gray-200 tracking-[0.3em]">
         <h2 className="text-6xl md:text-7xl font-extrabold mb-6 
                        text-red-700 
@@ -41,7 +38,6 @@ const Page4 = () => {
         </p>
       </div>
 
-      {/* Subtle glitch line */}
       <div className="absolute bottom-10 w-1/2 h-[1px] 
                       bg-red-800 
                       opacity-40 
