@@ -206,15 +206,125 @@ const Page3 = () => {
     if (masterGainRef.current) masterGainRef.current.gain.value = v;
   };
 
-  const playScreech = async () => { /* same as your previous code */ };
-  const playThump = async () => { /* same as your previous code */ };
-  const playWhisper = async () => { /* same as your previous code */ };
-  const speakText = async (text: string) => { /* same as your previous code */ };
+  const playScreech = async () => {
+    const ctx = await ensureAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 400;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001;
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGainRef.current!);
+
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(2000, now + 0.9);
+    gain.gain.exponentialRampToValueAtTime(0.9, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+    osc.start(now);
+    osc.stop(now + 1.4);
+  };
+
+  const playThump = async () => {
+    const ctx = await ensureAudioContext();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    const gain = ctx.createGain();
+    gain.gain.value = 0;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 200;
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(masterGainRef.current!);
+
+    osc.frequency.setValueAtTime(90, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.9, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+
+    osc.start(now);
+    osc.stop(now + 0.8);
+  };
+
+  const playWhisper = async () => {
+    const ctx = await ensureAudioContext();
+    if (!ctx) return;
+    const bufferSize = ctx.sampleRate * 1.2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (Math.random() * 0.4);
+
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const band = ctx.createBiquadFilter();
+    band.type = 'bandpass';
+    band.frequency.value = 1200;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.0001;
+
+    src.connect(band);
+    band.connect(gain);
+    gain.connect(masterGainRef.current!);
+
+    const now = ctx.currentTime;
+    gain.gain.exponentialRampToValueAtTime(0.6, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
+
+    src.start(now);
+    src.stop(now + 1.4);
+  };
+
+  // Text-to-speech
+  const speakText = async (text: string) => {
+    if (!('speechSynthesis' in window)) return;
+
+    window.speechSynthesis.cancel();
+
+    if (scaryVoice) {
+      const base = new SpeechSynthesisUtterance(text);
+      base.rate = 0.9;
+      base.pitch = 0.8;
+      base.volume = 1.0;
+
+      const low = new SpeechSynthesisUtterance(text);
+      low.rate = 0.85;
+      low.pitch = 0.55;
+      low.volume = 0.65;
+
+      const thin = new SpeechSynthesisUtterance(text);
+      thin.rate = 1.05;
+      thin.pitch = 1.2;
+      thin.volume = 0.35;
+
+      await ensureAudioContext();
+      playWhisper();
+      setTimeout(() => playThump(), 60);
+
+      window.speechSynthesis.speak(base);
+      setTimeout(() => window.speechSynthesis.speak(low), 40);
+      setTimeout(() => window.speechSynthesis.speak(thin), 120);
+    } else {
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 0.95;
+      utter.pitch = 0.95;
+      utter.volume = 1.0;
+      window.speechSynthesis.speak(utter);
+    }
+  };
 
   return (
     <div className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
       <div className="absolute inset-0 bg-gradient-radial from-red-900/10 via-transparent to-black pointer-events-none" />
-
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       <audio ref={audioRef} src="/ambient_loop.mp3" loop preload="auto" />
 
