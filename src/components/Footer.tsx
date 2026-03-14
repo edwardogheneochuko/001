@@ -44,12 +44,15 @@ const Footer = () => {
             <li className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
               <Youtube className="w-5 h-5" />
             </li>
-            <li className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
+            <a href='https://github.com/edwardogheneochuko/001.git'
+            className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
               <Github className="w-5 h-5" />
-            </li>
-            <li className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
+            </a>
+            <a
+            href='https://www.linkedin.com/in/edward-ogheneochuko/'
+            className="hover:text-red-600 hover:scale-110 transition duration-300 cursor-pointer">
               <Linkedin className="w-5 h-5" />
-            </li>
+            </a>
           </ul>
 
           <div className="text-xs text-gray-600 tracking-widest opacity-70">
