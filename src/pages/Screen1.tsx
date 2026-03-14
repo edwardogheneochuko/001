@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const PumpkinIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -18,26 +19,23 @@ const PumpkinIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const Page1 = () => {
+  const navigate = useNavigate();
+
   return (
     <div id="abyss" className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
-      {/* Ambient red glow overlay */}
       <div className="absolute inset-0 bg-gradient-radial from-red-900/15 via-transparent to-black pointer-events-none" />
-
-      {/* Flickering Window Effect - updated */}
       <motion.div
         className="absolute w-full h-full bg-gradient-to-br from-black/80 via-red-950/10 to-black/80"
         animate={{ opacity: [0.7, 0.9, 0.6, 0.9] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
 
-      {/* Main Content */}
       <motion.div
         className="relative flex flex-col items-center justify-center text-center px-4 h-full"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
       >
-        {/* Pumpkin Icon - Scary version */}
         <motion.div
           className="mb-12 text-red-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.8)]"
           animate={{ 
@@ -50,8 +48,8 @@ const Page1 = () => {
           <PumpkinIcon className="w-32 h-32" />
         </motion.div>
 
-        {/* Main Title */}
         <motion.h1
+        onClick={() => navigate('/login')}
           className="text-7xl sm:text-8xl font-black mb-6 tracking-widest text-red-500"
           animate={{ 
             scale: [1, 1.15, 0.95, 1.1],
@@ -63,9 +61,8 @@ const Page1 = () => {
           }}
         >
           WELCOME
-        </motion.h1>
+       </motion.h1>
 
-        {/* Subtitle with scary vibe */}
         <motion.p
           className="text-2xl sm:text-3xl text-gray-300 drop-shadow-lg mb-12 italic font-light"
           animate={{ opacity: [0.6, 1, 0.4, 1], scale: [1, 1.05, 0.98, 1.02] }}
@@ -75,8 +72,8 @@ const Page1 = () => {
           Project 001: A Journey into the Void
         </motion.p>
 
-        {/* CTA Button with scary effects */}
         <motion.button
+          onClick={() => navigate('/login')}
           className="px-12 py-4 bg-gradient-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
           border-2 border-red-600/70 hover:border-red-400 rounded-lg font-bold text-red-300 hover:text-red-100
           transition-all duration-300 text-lg drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]

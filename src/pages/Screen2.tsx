@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { scaryContent } from '../assets/data'
 import clown from '../assets/clown.jpg';
-import SlideCard from '../components/Page2/SlideCard';
-import NavigationControls from '../components/Page2/NavigationControls';
-import SlideIndicators from '../components/Page2/SlideIndicators';
-import BackgroundImage from '../components/Page2/BackgroundImage';
+import SlideCard from '../components/Screen2/SlideCard';
+import NavigationControls from '../components/Screen2/NavigationControls';
+import SlideIndicators from '../components/Screen2/SlideIndicators';
+import BackgroundImage from '../components/Screen2/BackgroundImage';
 
 const Page2 = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
