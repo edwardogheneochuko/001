@@ -1,4 +1,4 @@
-import { Icon, Search, ChevronDown } from "lucide-react";
+import { Icon, Search, ChevronDown, PersonStanding, HelpCircle } from "lucide-react";
 import { pumpkin } from "@lucide/lab";
 import { useState } from "react";
 
@@ -9,7 +9,7 @@ const TopNav = () => {
     <div className="mt-3">
       {/* Top Bar */}
       <div className="bg-gray-100 px-3 md:px-9 py-2">
-        <h1 className="text-xs md:text-sm text-red-600">Sell on 001</h1>
+        <h1 className="text-xs md:text-sm text-red-600 hidden md:block">Sell on 001</h1>
       </div>
 
       <div className="flex items-center justify-between md:px-12 px-3 py-5">
@@ -40,8 +40,10 @@ const TopNav = () => {
           <div className="relative">
             <button
               onClick={() => setOpenAccount(!openAccount)}
-              className="flex items-center gap-1 hover:text-red-500 cursor-pointer"
+              className="flex items-center gap-1 hover:text-red-500 cursor-pointer
+              text-xs md:text-sm lg:text-lg"
             >
+              <PersonStanding />
               Account
               <ChevronDown size={16} />
             </button>
@@ -59,7 +61,10 @@ const TopNav = () => {
               </div>
             )}
           </div>
-          <button className="hover:text-red-500">Help</button>
+          <button className="flex items-center  gap-1 hover:text-red-500 cursor-pointer
+          text-xs md:text-sm lg:text-lg">
+          <HelpCircle />  Help   <ChevronDown size={16} />
+          </button>
         </div>
       </div>
     </div>
