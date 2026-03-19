@@ -1,12 +1,12 @@
 // src/pages/LandingPage.tsx
 import { useState, useEffect, useRef } from "react"
 import pumpkin from "../assets/pumpkin.mp4"
-import Navbar from "../components/Navbar"
-import Page1 from "../pages/Screen1"
-import Page2 from "../pages/Screen2"
-import Page3 from "../pages/Screen3"
-import Page4 from "../pages/Screen4"
-import Footer from "../components/Footer"
+import Navbar from "./Navbar"
+import Page1 from "@/pages/Screen1"
+import Page2 from "@/pages/Screen2"
+import Page3 from "@/pages/Screen3"
+import Page4 from "@/pages/Screen4"
+import Footer from "./Footer"
 
 const LandingPage = () => {
   const [showContent, setShowContent] = useState(false)
