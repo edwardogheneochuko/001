@@ -5,6 +5,7 @@ interface NavbarProps {
   isVisible: boolean
 }
 
+
 const Navbar = ({ isVisible }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 

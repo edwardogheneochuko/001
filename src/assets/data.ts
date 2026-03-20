@@ -58,6 +58,7 @@ export const scaryContent: ScaryItem[] = [
 // ---------- Categories ----------
 import { GiMedicinePills, GiPowder } from "react-icons/gi"
 import type { IconType } from "react-icons" // for typing
+import { Accessibility, AccessibilityIcon } from "lucide-react"
 
 export interface Category {
   name: string
@@ -78,11 +79,10 @@ export const categories: Category[] = [
       "https://res.cloudinary.com/direjlzc6/image/upload/v1773786917/gpdmtwi5sewficoqfsk4.jpg",
   },
   {
-    name: "Medicine",
-    icon: GiMedicinePills,
-    image:
-      "https://res.cloudinary.com/direjlzc6/image/upload/v1773787990/nx8corhqrwegcjyaozuk.jpg",
-  },
+    name: "Acessories",
+    icon: AccessibilityIcon,
+    image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786901/v5xjuxbokpbl0ueaxd9b.jpg",
+  }
 ]
 
 // Items for each category
@@ -96,13 +96,16 @@ export const categoryItems: Record<string, Item[]> = {
   Gun: [
     { id: 1, name: "Pistol", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786900/loxs8jx58df60zfodckw.jpg" },
     { id: 2, name: "AK-47", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786873/i8i3zhdwbrvqratxdtyq.jpg" },
+    {id: 3, name: "Revolver", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773954492/xzvqcfkzwy44zqdjqjf4.jpg"},
+    {id: 4, name: "Rifle", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773954481/u9gowlnncgsb9drkbddh.jpg"}
   ],
   Drugs: [
-    { id: 1, name: "Cocaine", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786917/gpdmtwi5sewficoqfsk4.jpg" },
-    { id: 2, name: "Heroin", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786917/gpdmtwi5sewficoqfsk4.jpg" },
+    { id: 1, name: "Pills", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786893/jzyomwhat1ol3foh4cui.jpg" },
+    { id: 2, name: "Weed", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786877/snpvxnx6xexkbflxw7ex.jpg" },
+    {id: 3, name: "Cocaine", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773954489/lt5fqenj85tntceyfdjf.jpg"},
   ],
-  Medicine: [
-    { id: 1, name: "Painkiller", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773787990/nx8corhqrwegcjyaozuk.jpg" },
-    { id: 2, name: "Antibiotic", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773787990/nx8corhqrwegcjyaozuk.jpg" },
+  Acessories: [
+    { id: 1, name: "Money Exchange", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773787364/wbkcginacnbu932huqrb.jpg" },
+    { id: 2, name: "Bullets", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786844/aaqbawhz2myr7dnemcl1.jpg" },
   ],
 }

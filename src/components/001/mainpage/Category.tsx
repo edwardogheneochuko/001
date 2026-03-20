@@ -76,7 +76,8 @@ const Category = () => {
 
             <button
               onClick={() => setSelectedCategory(null)}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-black text-white text-sm hover:bg-gray-800 transition shadow-md"
+              className="flex items-center gap-2 px-4 py-2 cursor-pointer
+               rounded-full bg-black text-white text-sm hover:bg-gray-800 transition shadow-md"
             >
               ← Back
             </button>
@@ -86,7 +87,8 @@ const Category = () => {
             {categoryItems[selectedCategory].map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition duration-300 group"
+                className="bg-white rounded-2xl overflow-hidden cursor-pointer
+                 shadow-sm hover:shadow-xl transition duration-300 group"
               >
                 <div className="overflow-hidden">
                   <img
