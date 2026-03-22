@@ -2,12 +2,12 @@ import { Award } from "lucide-react";
 
 const Homepage = () => {
   return (
-    <div className="min-h-screen px-6 md:px-16 py-12 flex flex-col md:flex-row 
-    items-center gap-12 md:gap-24 mt-24">
-      <div className="sm:flex-1 space-y-6 text-center md:text-left">
-        <h1 className="text-5xl md:text-6xl font-black ">001</h1>
-        <h2 className="text-3xl md:text-4xl font-semibold">Dark Marketplace</h2>
-        <p className="text-gray-400 max-w-md">
+    <div className="min-h-screen px-6 md:px-16 dark:bg-neutral-600 py-12 flex flex-col md:flex-row 
+    items-center gap-12 md:gap-24">
+      <div className="sm:flex-1 space-y-6 text-center md:text-left mt-24">
+        <h1 className="text-5xl md:text-6xl font-black dark:text-white ">001</h1>
+        <h2 className="text-3xl md:text-4xl font-semibold dark:text-gray-300">Dark Marketplace</h2>
+        <p className="text-gray-400  max-w-md">
           Explore forbidden, rare, and mysterious products. Only the brave dare to click below.
         </p>
 

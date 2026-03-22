@@ -12,14 +12,14 @@ const Category = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   return (
-    <div className="px-4 sm:px-6 md:px-12 lg:px-20 py-10 bg-gray-50 min-h-screen">
+    <div className="px-4 sm:px-6 md:px-12 lg:px-20 pt-10 bg-gray-50 min-h-screen dark:bg-neutral-500">
       
       {!selectedCategory && (
-        <div className="mb-10 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+        <div className="py-10 text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bosld tracking-tight dark:text-white">
             Explore Categories
           </h1>
-          <p className="text-gray-500 mt-2 text-sm sm:text-base">
+          <p className="text-gray-500 mt-2 text-sm sm:text-base dark:text-white">
             Discover items by category
           </p>
         </div>
@@ -66,7 +66,7 @@ const Category = () => {
         <div>
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold">
+              <h2 className="text-2xl sm:text-3xl font-bold pt-5 dark:text-white">
                 {selectedCategory}
               </h2>
               <p className="text-gray-500 text-sm">
@@ -87,7 +87,7 @@ const Category = () => {
             {categoryItems[selectedCategory].map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl overflow-hidden cursor-pointer
+                className="bg-white rounded-2xl overflow-hidden cursor-pointer dark:bg-gray-700
                  shadow-sm hover:shadow-xl transition duration-300 group"
               >
                 <div className="overflow-hidden">
@@ -99,11 +99,11 @@ const Category = () => {
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-semibold text-sm sm:text-base mb-1">
+                  <h3 className="font-semibold dark:text-white text-sm sm:text-base mb-1">
                     {item.name}
                   </h3>
 
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Click to explore more
                   </p>
                 </div>
