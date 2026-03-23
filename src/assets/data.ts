@@ -56,9 +56,9 @@ export const scaryContent: ScaryItem[] = [
 ]
 
 // ---------- Categories ----------
-import { GiMedicinePills, GiPowder } from "react-icons/gi"
+import {  GiPowder } from "react-icons/gi"
 import type { IconType } from "react-icons" // for typing
-import { Accessibility, AccessibilityIcon } from "lucide-react"
+import { AccessibilityIcon } from "lucide-react"
 
 export interface Category {
   name: string
