@@ -40,8 +40,8 @@ const TopNav = () => {
         animate={{ x: isDark ? 28 : 0 }}
         transition={{
           type: "spring",
-          stiffness: 140,  // low enough to be soft
-          damping: 16,     // smooth deceleration
+          stiffness: 140,  
+          damping: 16,     
           mass: 1,
         }}
         drag="x"

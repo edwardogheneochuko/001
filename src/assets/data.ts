@@ -109,3 +109,12 @@ export const categoryItems: Record<string, Item[]> = {
     { id: 2, name: "Bullets", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786844/aaqbawhz2myr7dnemcl1.jpg" },
   ],
 }
+
+export const depressionTalks: string[] = [
+  "My ex-boyfriend said he would kill himself if I left him. I call him my ex because he's gone now...I have being feeling grief for two months now. I don't know how to move on.",
+  "I've lost loved ones and I've also had friends who have struggled significantly with grief but i can never tell those friends that I'm often very suicidal....I maintain this sunny deposition to hide what i have been going through as they're coping with loss I'm coping with the effects that losing my own life might have on their life",
+  "When i was like 12 years old, me and my brother were told that my grandfather had passed away from a heart attack, it was really sad, first like death that i had to go through and then fast forward like two years later, maybe more than that I'm snopping through my mom's phone and i find her reddit account and on her reddit account she detailed how my grandfather commited suicide",
+  "So I've grown up in the bible belt my entire life and earlier this year...my cousin died by sucide... Previous to this, I removed myself from religion, it's probably been a year now when the time came for the funeral all people could keep saying and talking about was thank goodness he was saved two months before he died and they keep repeating it over and over and over again and in those moments i was so angry because i know that there was people at his funeral who thought that he prolly went to Hell",
+  "My 15 year old brother took his own life three years ago, everyday I stuggle with forgiving him because it seemed like a very selfish and weak thing to do",
+  "I lost my best friend from suicide when i was 23, i used to do a lot of drugs so i can see her again and it was just crazy times after i stopped doing drugs, I kinda forgot about her"
+]

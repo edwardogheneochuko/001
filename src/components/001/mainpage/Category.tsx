@@ -12,14 +12,15 @@ const Category = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
   return (
-    <div className="px-4 sm:px-6 md:px-12 lg:px-20 pt-10 bg-gray-50 min-h-screen dark:bg-neutral-500">
-      
+    <div className="px-4 sm:px-6 md:px-12 lg:px-20 py-10 
+    bg-gray-50 dark:bg-neutral-900 min-h-screen">
+
       {!selectedCategory && (
         <div className="py-10 text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bosld tracking-tight dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
             Explore Categories
           </h1>
-          <p className="text-gray-500 mt-2 text-sm sm:text-base dark:text-white">
+          <p className="text-gray-500 mt-2 text-sm sm:text-base dark:text-gray-300">
             Discover items by category
           </p>
         </div>
@@ -34,15 +35,17 @@ const Category = () => {
               <div
                 key={index}
                 onClick={() => setSelectedCategory(cat.name)}
-                className="relative rounded-2xl overflow-hidden cursor-pointer group transform hover:-translate-y-2 transition duration-300"
+                className="relative h-[280px] sm:h-[320px] md:h-[380px] 
+                rounded-2xl overflow-hidden cursor-pointer group 
+                transform hover:-translate-y-2 transition duration-300"
               >
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-56 object-cover group-hover:scale-110 transition duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-90" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
                 <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3 text-white">
                   {Icon && (
@@ -64,20 +67,21 @@ const Category = () => {
 
       {selectedCategory && categoryItems[selectedCategory] && (
         <div>
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold pt-5 dark:text-white">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 {selectedCategory}
               </h2>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 text-sm dark:text-gray-400">
                 Browse items in this category
               </p>
             </div>
 
             <button
               onClick={() => setSelectedCategory(null)}
-              className="flex items-center gap-2 px-4 py-2 cursor-pointer
-               rounded-full bg-black text-white text-sm hover:bg-gray-800 transition shadow-md"
+              className="flex items-center gap-2 px-4 py-2 
+              rounded-full bg-black text-white text-sm 
+              hover:bg-gray-800 transition shadow-md w-fit"
             >
               ← Back
             </button>
@@ -87,19 +91,19 @@ const Category = () => {
             {categoryItems[selectedCategory].map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl overflow-hidden cursor-pointer dark:bg-gray-700
-                 shadow-sm hover:shadow-xl transition duration-300 group"
+                className="bg-white dark:bg-neutral-800 rounded-2xl overflow-hidden 
+                cursor-pointer shadow-sm hover:shadow-xl transition duration-300 group"
               >
-                <div className="overflow-hidden">
+                <div className="h-[250px] overflow-hidden">
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-full h-52 object-cover group-hover:scale-105 transition duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                   />
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-semibold dark:text-white text-sm sm:text-base mb-1">
+                  <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base mb-1">
                     {item.name}
                   </h3>
 
