@@ -1,7 +1,7 @@
-import Hero from "@/components/001/Hero"
-import Category from "@/components/001/mainpage/Category"
-import Homepage from "@/components/001/mainpage/Homepage"
-import TopNav from "@/components/001/TopNav"
+import Hero from "@/components/main/Hero"
+import Category from "@/components/main/mainpage/Category"
+import Homepage from "@/components/main/mainpage/Homepage"
+import TopNav from "@/components/main/TopNav"
 
 const Mainpage = () => {
   return (

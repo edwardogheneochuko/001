@@ -7,8 +7,8 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithP
 import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { MdEmail } from "react-icons/md";
-import { auth, googleProvider } from "./firebase";
-import homepage from '../../assets/purple.jpg';
+import { auth, googleProvider } from "@/lib/firebase";
+import homepage from '@/assets/purple.jpg';
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),

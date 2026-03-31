@@ -1,9 +1,9 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import LandingPage from './components/LandingPage'
+import LandingPage from './pages/LandingPage'
 import Mainpage from "./pages/main/Mainpage"
-import Login from './components/auth/Login'
-import ProtectedRoute from './components/auth/ProtectedRoute'
+import Login from '@/auth/Login'
+import ProtectedRoute from '@/auth/ProtectedRoute'
 
 
 const App = () => {

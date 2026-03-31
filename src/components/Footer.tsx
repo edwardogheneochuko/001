@@ -7,19 +7,26 @@ const Footer = () => {
     <footer className="mt-8 md:mt-40 ml-3 md:ml-7 p-6 text-gray-300 tracking-widest">
 
       <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6 w-3/4 text-xs uppercase">
-        <div className="md:col-span-3 lg:col-span-1 text-red-700 animate-pulse">
-          001
-        </div>
-        <div className="hover:text-red-500 transition duration-300">
-          Footer Content 2
-        </div>
-        <div className="hover:text-red-500 transition duration-300">
-          Footer Content 3
-        </div>
-        <div className="hover:text-red-500 transition duration-300">
-          Footer Content 4
-        </div>
-      </div>
+  
+  <div className="md:col-span-3 lg:col-span-1 text-red-700 animate-pulse">
+    001 — A VOICE FOR THE SILENT
+  </div>
+
+  <div className="hover:text-red-500 transition duration-300 leading-relaxed">
+    A space for those battling depression, violence, and the chaos within.  
+    We turn pain into expression, silence into presence.
+  </div>
+
+  <div className="hover:text-red-500 transition duration-300 leading-relaxed">
+    001 exists to reflect the unseen — broken thoughts, hidden scars, and the reality many avoid.
+  </div>
+
+  <div className="hover:text-red-500 transition duration-300 leading-relaxed">
+    You are not alone in the dark.  
+    Even shadows need light to exist.
+  </div>
+
+</div>
 
       <hr className="border-t border-gray-700 my-8 w-full opacity-40" />
 

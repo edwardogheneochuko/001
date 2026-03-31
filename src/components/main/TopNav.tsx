@@ -12,10 +12,10 @@ import {
   Sun,
 } from "lucide-react";
 import { pumpkin } from "@lucide/lab";
-import { auth } from "../auth/firebase";
+import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "@/context/ThemeContext";
 import { motion } from "framer-motion";
 
 const TopNav = () => {

@@ -19,7 +19,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-import { auth, db } from "@/components/auth/firebase";
+import { auth, db } from "@/lib/firebase";
 import { depressionTalks } from "@/assets/data";
 
 const images = [
