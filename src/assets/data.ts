@@ -57,13 +57,13 @@ export const scaryContent: ScaryItem[] = [
 
 // ---------- Categories ----------
 import {  GiPowder } from "react-icons/gi"
-import type { IconType } from "react-icons" // for typing
+import type { ComponentType } from "react"
 import { AccessibilityIcon } from "lucide-react"
 
 export interface Category {
   name: string
   image: string
-  icon?: IconType
+  icon?: ComponentType<{ className?: string }>
 }
 
 export const categories: Category[] = [
@@ -79,7 +79,7 @@ export const categories: Category[] = [
       "https://res.cloudinary.com/direjlzc6/image/upload/v1773786917/gpdmtwi5sewficoqfsk4.jpg",
   },
   {
-    name: "Acessories",
+    name: "Accessories",
     icon: AccessibilityIcon,
     image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786901/v5xjuxbokpbl0ueaxd9b.jpg",
   }
@@ -104,7 +104,7 @@ export const categoryItems: Record<string, Item[]> = {
     { id: 2, name: "Weed", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786877/snpvxnx6xexkbflxw7ex.jpg" },
     {id: 3, name: "Cocaine", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773954489/lt5fqenj85tntceyfdjf.jpg"},
   ],
-  Acessories: [
+  Accessories: [
     { id: 1, name: "Money Exchange", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773787364/wbkcginacnbu932huqrb.jpg" },
     { id: 2, name: "Bullets", image: "https://res.cloudinary.com/direjlzc6/image/upload/v1773786844/aaqbawhz2myr7dnemcl1.jpg" },
   ],

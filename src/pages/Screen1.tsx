@@ -22,10 +22,10 @@ const Page1 = () => {
   const navigate = useNavigate();
 
   return (
-    <div id="abyss" className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
-      <div className="absolute inset-0 bg-gradient-radial from-red-900/15 via-transparent to-black pointer-events-none" />
+    <div id="abyss" className="w-screen h-screen relative overflow-hidden bg-linear-to-br from-black via-gray-950 to-red-950">
+      <div className="absolute inset-0 bg-radial from-red-900/15 via-transparent to-black pointer-events-none" />
       <motion.div
-        className="absolute w-full h-full bg-gradient-to-br from-black/80 via-red-950/10 to-black/80"
+        className="absolute w-full h-full bg-linear-to-br from-black/80 via-red-950/10 to-black/80"
         animate={{ opacity: [0.7, 0.9, 0.6, 0.9] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
@@ -74,7 +74,7 @@ const Page1 = () => {
 
         <motion.button
           onClick={() => navigate('/login')}
-          className="px-12 py-4 bg-gradient-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
+          className="px-12 py-4 bg-linear-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
           border-2 border-red-600/70 hover:border-red-400 rounded-lg font-bold text-red-300 hover:text-red-100
           transition-all duration-300 text-lg drop-shadow-[0_0_15px_rgba(239,68,68,0.4)]
           hover:drop-shadow-[0_0_30px_rgba(239,68,68,0.8)] cursor-pointer"
@@ -104,7 +104,7 @@ const Page1 = () => {
 
       {/* Floating haunting orbs - enhanced */}
       <motion.div
-        className="absolute w-40 h-40 bg-gradient-to-br from-red-900/20 to-red-950/10 rounded-full blur-3xl top-1/4 left-10"
+        className="absolute w-40 h-40 bg-linear-to-br from-red-900/20 to-red-950/10 rounded-full blur-3xl top-1/4 left-10"
         animate={{ 
           y: [0, 40, 0], 
           x: [0, 20, -10, 0],
@@ -113,7 +113,7 @@ const Page1 = () => {
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute w-32 h-32 bg-gradient-to-tl from-red-900/15 to-transparent rounded-full blur-3xl bottom-1/3 right-20"
+        className="absolute w-32 h-32 bg-linear-to-tl from-red-900/15 to-transparent rounded-full blur-3xl bottom-1/3 right-20"
         animate={{ 
           y: [0, -30, 0], 
           x: [0, -15, 10, 0],
@@ -124,12 +124,12 @@ const Page1 = () => {
 
       {/* Decorative corner glows */}
       <motion.div
-        className="absolute top-0 left-0 w-32 h-32 bg-gradient-to-br from-red-900/10 via-transparent to-transparent rounded-full blur-2xl"
+        className="absolute top-0 left-0 w-32 h-32 bg-linear-to-br from-red-900/10 via-transparent to-transparent rounded-full blur-2xl"
         animate={{ opacity: [0.3, 0.7, 0.3] }}
         transition={{ duration: 4, repeat: Infinity }}
       />
       <motion.div
-        className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-red-900/10 via-transparent to-transparent rounded-full blur-2xl"
+        className="absolute bottom-0 right-0 w-40 h-40 bg-linear-to-tl from-red-900/10 via-transparent to-transparent rounded-full blur-2xl"
         animate={{ opacity: [0.2, 0.6, 0.2] }}
         transition={{ duration: 5, repeat: Infinity }}
       />

@@ -13,7 +13,7 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({ src, alt }) => {
         brightness-50 contrast-125 filter saturate-150 hue-rotate-6"
       />
       {/* Image shadow vignette */}
-      <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-linear-to-l from-black/80 via-transparent to-transparent" />
     </div>
   );
 };

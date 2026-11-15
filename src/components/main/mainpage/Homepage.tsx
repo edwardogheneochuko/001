@@ -11,7 +11,10 @@ const Homepage = () => {
           Explore forbidden, rare, and mysterious products. Only the brave dare to click below.
         </p>
 
-        <button className="px-6 py-3 bg-red-900 hover:bg-red-800 text-white rounded-lg font-bold shadow-lg shadow-red-800 transition-all transform hover:scale-105">
+        <button
+          type="button"
+          onClick={() => document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" })}
+          className="cursor-pointer px-6 py-3 bg-red-900 hover:bg-red-800 text-white rounded-lg font-bold shadow-lg shadow-red-800 transition-all transform hover:scale-105">
           Enter the Market
         </button>
       </div>
@@ -19,7 +22,7 @@ const Homepage = () => {
       <div className="flex-1 relative group w-full max-w-lg">
         <img
           src="https://res.cloudinary.com/direjlzc6/image/upload/v1773788010/npggjaeyushtbjhu0jbo.jpg"
-          alt="Scary Product"
+          alt="Featured item"
           className="w-full rounded-xl border-4 shadow-2xl transform transition-transform duration-300 group-hover:scale-105"
         />
 

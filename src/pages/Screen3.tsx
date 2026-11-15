@@ -1,123 +1,102 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RefObject } from 'react';
+import useAudioEngine from '@/hooks/useAudioEngine';
 
-const AudioControl = ({ audioRef }: { audioRef: RefObject<HTMLAudioElement | null> }) => {
-  const [playing, setPlaying] = useState(false);
-  const [muted, setMuted] = useState(false);
-
-  const togglePlay = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (audio.paused) {
-      audio.play();
-      setPlaying(true);
-    } else {
-      audio.pause();
-      setPlaying(false);
-    }
-  };
-
-  const toggleMute = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = !audio.muted;
-    setMuted(audio.muted);
-  };
-
-  return (
-    <div id="nightmares" className="flex flex-wrap gap-2 sm:gap-4">
-      <button
-        onClick={togglePlay}
-        className="px-3 sm:px-4 py-2 bg-red-900/60 hover:bg-red-800 text-red-100 rounded-md border border-red-700 text-sm sm:text-base"
-      >
-        {playing ? 'Pause' : 'Play'}
-      </button>
-      <button
-        onClick={toggleMute}
-        className="px-3 py-2 bg-red-900/40 hover:bg-red-800 text-red-200 rounded-md border border-red-700 text-sm sm:text-base"
-      >
-        {muted ? 'Unmute' : 'Mute'}
-      </button>
-    </div>
-  );
+type AudioControlProps = {
+  playing: boolean;
+  muted: boolean;
+  onTogglePlay: () => void;
+  onToggleMute: () => void;
 };
+
+const AudioControl = ({ playing, muted, onTogglePlay, onToggleMute }: AudioControlProps) => (
+  <div className="flex flex-wrap gap-2 sm:gap-4">
+    <button
+      type="button"
+      onClick={onTogglePlay}
+      className="px-3 sm:px-4 py-2 bg-red-900/60 hover:bg-red-800 text-red-100 rounded-md border border-red-700 text-sm sm:text-base cursor-pointer"
+    >
+      {playing ? 'Pause' : 'Play'}
+    </button>
+    <button
+      type="button"
+      onClick={onToggleMute}
+      disabled={!playing}
+      className="px-3 py-2 bg-red-900/40 hover:bg-red-800 text-red-200 rounded-md border border-red-700 text-sm sm:text-base cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {muted ? 'Unmute' : 'Mute'}
+    </button>
+  </div>
+);
+
+const fxButton =
+  'px-2 sm:px-3 py-2 bg-red-800/60 hover:bg-red-700 text-white rounded-md border border-red-700 text-sm sm:text-base cursor-pointer';
 
 const Page3 = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const masterGainRef = useRef<GainNode | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
-  const animationRef = useRef<number | null>(null);
+  const {
+    analyserRef,
+    masterVolume,
+    setMasterGain,
+    ambientPlaying,
+    ambientMuted,
+    toggleAmbient,
+    toggleAmbientMute,
+    playScreech,
+    playThump,
+    playWhisper,
+    speakText,
+  } = useAudioEngine(0.6);
   const [ttsText, setTtsText] = useState('');
-  const [masterVolume, setMasterVolume] = useState(0.6);
   const [scaryVoice, setScaryVoice] = useState(true);
 
   useEffect(() => {
-    const canvas = canvasRef.current!;
-    const ctx = canvas.getContext('2d')!;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext('2d');
+    if (!canvas || !ctx) return;
+
+    let width = (canvas.width = canvas.clientWidth || window.innerWidth);
+    let height = (canvas.height = canvas.clientHeight || window.innerHeight);
 
     const resize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = canvas.width = canvas.clientWidth || window.innerWidth;
+      height = canvas.height = canvas.clientHeight || window.innerHeight;
     };
     window.addEventListener('resize', resize);
 
     type Particle = { x: number; y: number; vx: number; vy: number; size: number; hue: number };
-    const particles: Particle[] = [];
     const COUNT = Math.max(60, Math.floor((width * height) / 8000));
+    const particles: Particle[] = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      size: 1 + Math.random() * 3,
+      hue: 10 + Math.random() * 40,
+    }));
 
-    for (let i = 0; i < COUNT; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        size: 1 + Math.random() * 3,
-        hue: 10 + Math.random() * 40,
-      });
-    }
-
-    const mouse = { x: width / 2, y: height / 2, active: false };
-    const mousemoveHandler = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+    // Pointer events cover mouse, touch and pen
+    const pointer = { x: width / 2, y: height / 2, active: false };
+    const toLocal = (e: PointerEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = e.clientX - rect.left;
+      pointer.y = e.clientY - rect.top;
     };
-    const mousedownHandler = () => (mouse.active = true);
-    const mouseupHandler = () => (mouse.active = false);
-
-    window.addEventListener('mousemove', mousemoveHandler);
-    window.addEventListener('mousedown', mousedownHandler);
-    window.addEventListener('mouseup', mouseupHandler);
+    const onMove = (e: PointerEvent) => toLocal(e);
+    const onDown = (e: PointerEvent) => {
+      toLocal(e);
+      pointer.active = true;
+    };
+    const onUp = () => {
+      pointer.active = false;
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
 
     let audioLevel = 0;
-
-    const setupAudio = async () => {
-      try {
-        const audio = audioRef.current;
-        if (!audio) return;
-        const AudioContext = (window.AudioContext || (window as any).webkitAudioContext);
-        if (!AudioContext) return;
-        const ctxAudio = new AudioContext();
-        audioCtxRef.current = ctxAudio;
-
-        const master = ctxAudio.createGain();
-        master.gain.value = masterVolume;
-        master.connect(ctxAudio.destination);
-        masterGainRef.current = master;
-
-        const src = ctxAudio.createMediaElementSource(audio);
-        const analyser = ctxAudio.createAnalyser();
-        analyser.fftSize = 256;
-        src.connect(analyser);
-        analyser.connect(master);
-        analyserRef.current = analyser;
-      } catch (e) { }
-    };
-
-    setupAudio();
+    let frame = 0;
+    let data: Uint8Array<ArrayBuffer> | null = null;
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
@@ -125,13 +104,15 @@ const Page3 = () => {
 
       const analyser = analyserRef.current;
       if (analyser) {
-        const data = new Uint8Array(analyser.frequencyBinCount);
+        if (!data || data.length !== analyser.frequencyBinCount) {
+          data = new Uint8Array(analyser.frequencyBinCount);
+        }
         analyser.getByteFrequencyData(data);
         let sum = 0;
         for (let i = 0; i < data.length; i++) sum += data[i];
         audioLevel = sum / data.length / 255;
       } else {
-        audioLevel = audioLevel * 0.95;
+        audioLevel *= 0.95;
       }
 
       for (const p of particles) {
@@ -143,231 +124,99 @@ const Page3 = () => {
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
-        const dx = p.x - mouse.x;
-        const dy = p.y - mouse.y;
+        const dx = p.x - pointer.x;
+        const dy = p.y - pointer.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const force = Math.min(80, 120 / dist);
-        if (mouse.active) {
+        if (pointer.active) {
+          const force = Math.min(80, 120 / dist);
           p.vx += (dx / dist) * force * 0.002;
           p.vy += (dy / dist) * force * 0.002;
         } else {
           p.vx += (Math.random() - 0.5) * 0.01;
           p.vy += (Math.random() - 0.5) * 0.01;
         }
+        // light damping so particles don't accelerate forever
+        p.vx *= 0.995;
+        p.vy *= 0.995;
 
         const size = p.size * (1 + audioLevel * 3);
         const hue = p.hue + audioLevel * 30;
-        ctx.beginPath();
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 4);
         grad.addColorStop(0, `hsla(${hue},90%,60%,0.9)`);
         grad.addColorStop(0.2, `hsla(${hue},90%,50%,0.35)`);
         grad.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = grad;
+        ctx.beginPath();
         ctx.arc(p.x, p.y, size * 2.5, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      animationRef.current = requestAnimationFrame(draw);
+      frame = requestAnimationFrame(draw);
     };
 
-    draw();
+    frame = requestAnimationFrame(draw);
 
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', mousemoveHandler);
-      window.removeEventListener('mousedown', mousedownHandler);
-      window.removeEventListener('mouseup', mouseupHandler);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
     };
-  }, []);
+  }, [analyserRef]);
 
-  const ensureAudioContext = async () => {
-    if (!audioCtxRef.current) {
-      try {
-        const AudioContext = (window.AudioContext || (window as any).webkitAudioContext);
-        if (!AudioContext) return null;
-        const ctx = new AudioContext();
-        audioCtxRef.current = ctx;
-        const master = ctx.createGain();
-        master.gain.value = masterVolume;
-        master.connect(ctx.destination);
-        masterGainRef.current = master;
-        return ctx;
-      } catch (e) {
-        return null;
-      }
-    }
-    if (audioCtxRef.current.state === 'suspended') await audioCtxRef.current.resume();
-    return audioCtxRef.current;
-  };
-
-  const setMasterGain = (v: number) => {
-    setMasterVolume(v);
-    if (masterGainRef.current) masterGainRef.current.gain.value = v;
-  };
-
-  const playScreech = async () => {
-    const ctx = await ensureAudioContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    osc.type = 'sawtooth';
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'highpass';
-    filter.frequency.value = 400;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.0001;
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(masterGainRef.current!);
-
-    osc.frequency.setValueAtTime(1200, now);
-    osc.frequency.exponentialRampToValueAtTime(2000, now + 0.9);
-    gain.gain.exponentialRampToValueAtTime(0.9, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-
-    osc.start(now);
-    osc.stop(now + 1.4);
-  };
-
-  const playThump = async () => {
-    const ctx = await ensureAudioContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    const gain = ctx.createGain();
-    gain.gain.value = 0;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 200;
-
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(masterGainRef.current!);
-
-    osc.frequency.setValueAtTime(90, now);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.9, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
-
-    osc.start(now);
-    osc.stop(now + 0.8);
-  };
-
-  const playWhisper = async () => {
-    const ctx = await ensureAudioContext();
-    if (!ctx) return;
-    const bufferSize = ctx.sampleRate * 1.2;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (Math.random() * 0.4);
-
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const band = ctx.createBiquadFilter();
-    band.type = 'bandpass';
-    band.frequency.value = 1200;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.0001;
-
-    src.connect(band);
-    band.connect(gain);
-    gain.connect(masterGainRef.current!);
-
-    const now = ctx.currentTime;
-    gain.gain.exponentialRampToValueAtTime(0.6, now + 0.03);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.2);
-
-    src.start(now);
-    src.stop(now + 1.4);
-  };
-
-  // Text-to-speech
-  const speakText = async (text: string) => {
-    if (!('speechSynthesis' in window)) return;
-
-    window.speechSynthesis.cancel();
-
-    if (scaryVoice) {
-      const base = new SpeechSynthesisUtterance(text);
-      base.rate = 0.9;
-      base.pitch = 0.8;
-      base.volume = 1.0;
-
-      const low = new SpeechSynthesisUtterance(text);
-      low.rate = 0.85;
-      low.pitch = 0.55;
-      low.volume = 0.65;
-
-      const thin = new SpeechSynthesisUtterance(text);
-      thin.rate = 1.05;
-      thin.pitch = 1.2;
-      thin.volume = 0.35;
-
-      await ensureAudioContext();
-      playWhisper();
-      setTimeout(() => playThump(), 60);
-
-      window.speechSynthesis.speak(base);
-      setTimeout(() => window.speechSynthesis.speak(low), 40);
-      setTimeout(() => window.speechSynthesis.speak(thin), 120);
-    } else {
-      const utter = new SpeechSynthesisUtterance(text);
-      utter.rate = 0.95;
-      utter.pitch = 0.95;
-      utter.volume = 1.0;
-      window.speechSynthesis.speak(utter);
-    }
+  const handleSpeak = (e: React.FormEvent) => {
+    e.preventDefault();
+    speakText(ttsText, scaryVoice);
   };
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
-      <div className="absolute inset-0 bg-gradient-radial from-red-900/10 via-transparent to-black pointer-events-none" />
+    <div
+      id="nightmares"
+      className="w-screen h-screen relative overflow-hidden bg-linear-to-br from-black via-gray-950 to-red-950"
+    >
+      <div className="absolute inset-0 bg-radial from-red-900/10 via-transparent to-black pointer-events-none" />
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-      <audio ref={audioRef} src="/ambient_loop.mp3" loop preload="auto" />
 
-      <div className="absolute left-4 sm:left-8 top-8 sm:top-12 max-w-full sm:max-w-lg text-white">
+      <div className="absolute left-4 sm:left-8 top-8 sm:top-12 max-w-full sm:max-w-lg text-white pr-4">
         <h1 className="text-3xl sm:text-6xl font-black text-red-400 tracking-wider drop-shadow-lg">THE CHAMBER</h1>
         <p className="mt-2 sm:mt-4 text-sm sm:text-lg text-gray-300/90">
           An atmospheric room — audio-reactive particles and ambient sound.
         </p>
 
         <div className="mt-4 flex flex-col gap-3">
-          <AudioControl audioRef={audioRef} />
+          <AudioControl
+            playing={ambientPlaying}
+            muted={ambientMuted}
+            onTogglePlay={toggleAmbient}
+            onToggleMute={toggleAmbientMute}
+          />
 
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            <button onClick={() => { ensureAudioContext(); playScreech(); }}
-              className="px-2 sm:px-3 py-2 bg-red-800/60 hover:bg-red-700 text-white rounded-md border border-red-700 text-sm sm:text-base">
-              Screech
-            </button>
-            <button onClick={() => { ensureAudioContext(); playThump(); }}
-              className="px-2 sm:px-3 py-2 bg-red-800/60 hover:bg-red-700 text-white rounded-md border border-red-700 text-sm sm:text-base">
-              Thump
-            </button>
-            <button onClick={() => { ensureAudioContext(); playWhisper(); }}
-              className="px-2 sm:px-3 py-2 bg-red-800/60 hover:bg-red-700 text-white rounded-md border border-red-700 text-sm sm:text-base">
-              Whisper
-            </button>
+            <button type="button" onClick={playScreech} className={fxButton}>Screech</button>
+            <button type="button" onClick={playThump} className={fxButton}>Thump</button>
+            <button type="button" onClick={playWhisper} className={fxButton}>Whisper</button>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <div className="flex flex-nowrap gap-2 mr-5">
+            <form onSubmit={handleSpeak} className="flex flex-nowrap gap-2 mr-5">
               <input
                 value={ttsText}
                 onChange={(e) => setTtsText(e.target.value)}
                 placeholder="Type something..."
+                aria-label="Text to speak"
                 className="flex-1 min-w-0 px-2 sm:px-3 py-2 rounded-md bg-black/40 border border-red-700 text-white text-sm sm:text-base"
               />
               <button
-                onClick={() => { ensureAudioContext(); speakText(ttsText); }}
-                className="px-2 sm:px-3 py-2 cursor-pointer
-                 bg-red-700 hover:bg-red-600 text-white rounded-md border
-                 border-red-600 text-sm sm:text-base flex-shrink-0 duration-200"
-              > Speak
+                type="submit"
+                disabled={!ttsText.trim()}
+                className="px-2 sm:px-3 py-2 cursor-pointer bg-red-700 hover:bg-red-600 text-white rounded-md border
+                 border-red-600 text-sm sm:text-base flex-shrink-0 duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Speak
               </button>
-            </div>
+            </form>
             <label className="flex items-center gap-2 text-sm text-red-200">
               <input type="checkbox" checked={scaryVoice} onChange={(e) => setScaryVoice(e.target.checked)} />
               Scary Voice
@@ -375,8 +224,9 @@ const Page3 = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <label className="text-sm text-red-200/70">Master Volume</label>
+            <label htmlFor="master-volume" className="text-sm text-red-200/70">Master Volume</label>
             <input
+              id="master-volume"
               type="range"
               min={0}
               max={1}
@@ -389,7 +239,7 @@ const Page3 = () => {
         </div>
 
         <div className="mt-4 text-xs sm:text-sm text-red-200/70 font-mono">
-          Tip: press Play, then click and hold to disturb the field. Use the buttons to trigger noises or type and Speak.
+          Tip: press Play, then click (or touch) and hold to disturb the field. Use the buttons to trigger noises or type and Speak.
         </div>
       </div>
     </div>
