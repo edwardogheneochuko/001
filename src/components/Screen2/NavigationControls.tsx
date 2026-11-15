@@ -1,3 +1,5 @@
+import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+
 interface NavigationControlsProps {
   onNext: () => void;
   onPrev: () => void;
@@ -5,41 +7,32 @@ interface NavigationControlsProps {
   onToggleAutoPlay: () => void;
 }
 
-const NavigationControls: React.FC<NavigationControlsProps> = ({
-  onNext,
-  onPrev,
-  isAutoPlay,
-  onToggleAutoPlay,
-}) => {
+const arrowButton =
+  'group flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg border border-red-700/60 bg-red-950/50 text-red-200 ' +
+  'hover:bg-red-900/70 hover:border-red-400 hover:text-white active:scale-95 transition cursor-pointer';
+
+const NavigationControls = ({ onNext, onPrev, isAutoPlay, onToggleAutoPlay }: NavigationControlsProps) => {
   return (
-    <div className="flex items-center justify-between px-4">
-      {/* Previous button */}
-      <button 
-        onClick={onPrev}
-        className="group px-6 py-3 bg-linear-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
-        border border-red-600/50 hover:border-red-400 rounded-lg transition-all duration-300 
-        transform hover:scale-110 active:scale-95 cursor-pointer"
-      >
-        <span className="text-xl font-bold text-red-300 group-hover:text-red-100">← BACK</span>
+    <div className="flex items-center justify-between gap-3">
+      <button type="button" onClick={onPrev} aria-label="Previous slide" className={arrowButton}>
+        <ChevronLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
+        <span className="hidden sm:inline font-bold tracking-widest text-sm">BACK</span>
       </button>
 
-      {/* Autoplay toggle */}
-      <button 
+      <button
+        type="button"
         onClick={onToggleAutoPlay}
-        className="px-4 py-2 bg-gray-800/60 hover:bg-gray-700/60 border border-gray-600/50 
-        rounded-lg text-sm font-mono text-gray-300 hover:text-gray-100 transition-all cursor-pointer"
+        aria-label={isAutoPlay ? 'Pause slideshow' : 'Play slideshow'}
+        className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-600/60 bg-gray-900/60
+        text-xs sm:text-sm font-mono tracking-widest text-gray-300 hover:text-white hover:bg-gray-800/80 transition cursor-pointer"
       >
-        {isAutoPlay ? '⏸ PAUSE' : '▶ PLAY'}
+        {isAutoPlay ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+        {isAutoPlay ? 'PAUSE' : 'PLAY'}
       </button>
 
-      {/* Next button */}
-      <button 
-        onClick={onNext}
-        className="group px-6 py-3 bg-linear-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
-        border border-red-600/50 hover:border-red-400 rounded-lg transition-all duration-300 
-        transform hover:scale-110 active:scale-95 cursor-pointer"
-      >
-        <span className="text-xl font-bold text-red-300 group-hover:text-red-100">NEXT →</span>
+      <button type="button" onClick={onNext} aria-label="Next slide" className={arrowButton}>
+        <span className="hidden sm:inline font-bold tracking-widest text-sm">NEXT</span>
+        <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5" />
       </button>
     </div>
   );

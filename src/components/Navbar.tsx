@@ -1,155 +1,184 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { RefObject } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import { EASE_OUT } from '@/lib/motion'
 
 interface NavbarProps {
   isVisible: boolean
+  scrollRoot: RefObject<HTMLElement | null>
 }
 
+const navItems = [
+  { label: 'THE ABYSS', id: 'abyss' },
+  { label: 'WHISPERS', id: 'whispers' },
+  { label: 'NIGHTMARES', id: 'nightmares' },
+  { label: 'THE VOID', id: 'void' },
+]
 
-const Navbar = ({ isVisible }: NavbarProps) => {
+/** Tracks which section is in the middle of the scroll container. */
+const useActiveSection = (enabled: boolean, scrollRoot: RefObject<HTMLElement | null>) => {
+  const [active, setActive] = useState(navItems[0].id)
+
+  useEffect(() => {
+    if (!enabled) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(entry.target.id)
+        }
+      },
+      // A thin band across the middle of the screen decides the active section
+      { root: scrollRoot.current, rootMargin: '-45% 0px -45% 0px' },
+    )
+    // Sections mount with the content, so wait a frame for them to exist
+    const frame = requestAnimationFrame(() => {
+      navItems.forEach(({ id }) => {
+        const el = document.getElementById(id)
+        if (el) observer.observe(el)
+      })
+    })
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+    }
+  }, [enabled, scrollRoot])
+
+  return active
+}
+
+const Navbar = ({ isVisible, scrollRoot }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const active = useActiveSection(isVisible, scrollRoot)
 
-  const navItems = [
-    { label: 'THE ABYSS', id: 'abyss' },
-    { label: 'WHISPERS', id: 'whispers' },
-    { label: 'NIGHTMARES', id: 'nightmares' },
-    { label: 'THE VOID', id: 'void' },
-  ]
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [mobileMenuOpen])
 
   const handleNavClick = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
     setMobileMenuOpen(false)
   }
 
   return (
     <>
-      {/* Desktop Navbar */}
+      {/* Desktop side rail */}
       <nav
-        className={`hidden md:fixed md:top-0 md:right-0 md:h-screen md:w-56 md:z-20 md:flex md:flex-col md:items-center md:justify-center md:gap-8 md:transition-all md:duration-1000 md:backdrop-blur-lg
-        md:bg-linear-to-b md:from-black/90 md:via-red-950/40 md:to-black/90 
-        md:border-l-4 md:border-red-900/60 md:shadow-2xl md:shadow-red-900/20
-        ${isVisible ? 'md:opacity-100' : 'md:opacity-0 md:pointer-events-none'}`}
+        aria-label="Sections"
+        className={`hidden md:flex fixed top-0 right-0 h-dvh w-56 z-20 flex-col items-center justify-center gap-12
+        bg-linear-to-b from-black via-red-950/60 to-black border-l border-red-900/50
+        transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
       >
-        {/* Decorative top glow */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-linear-to-b from-red-900/20 via-red-900/5 to-transparent pointer-events-none md:rounded-b-3xl"/>
-        
-        {/* Logo with glow */}
-        <div 
-          className="text-red-500 text-2xl font-black mb-12 drop-shadow-2xl tracking-wider relative z-10 animate-pulse"
-          style={{ textShadow: '0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(0, 0, 0, 0.6)' }}
-        >
-          HAUNTED
-        </div>
+        <div className="text-red-500 text-2xl font-black tracking-[0.25em] text-glow">HAUNTED</div>
 
-        {/* Navigation items */}
-        <ul className="flex flex-col gap-8 text-white text-sm relative z-10 w-full px-6">
-          {navItems.map((item, index) => (
-            <li
-              key={item.label}
-              onClick={() => handleNavClick(item.id)}
-              className="group relative cursor-pointer transition-all duration-300"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              {/* Background glow on hover */}
-              <div className="absolute -inset-3 bg-linear-to-r from-red-900/0 via-red-600/0 to-red-900/0 
-              group-hover:from-red-900/30 group-hover:via-red-600/20 group-hover:to-red-900/30 
-              rounded-lg transition-all duration-300 group-hover:blur-md opacity-0 group-hover:opacity-100" />
-              
-              {/* Text with effects */}
-              <span className="relative block px-4 py-2 text-red-300 group-hover:text-red-100 
-              transition-all duration-300 group-hover:translate-x-3 group-hover:scale-110 
-              border-l-2 border-l-red-900/40 group-hover:border-l-red-500 
-              drop-shadow-lg group-hover:drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]">
-                {item.label}
-              </span>
-
-              {/* Corner accent dots */}
-              <div className="absolute right-0 top-0 w-1 h-1 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 
-              transition-opacity duration-300" />
-              <div className="absolute right-0 bottom-0 w-1 h-1 bg-red-500 rounded-full opacity-0 group-hover:opacity-100 
-              transition-opacity duration-300" />
-            </li>
-          ))}
+        <ul className="flex flex-col gap-2 w-full px-6">
+          {navItems.map((item) => {
+            const isActive = active === item.id
+            return (
+              <li key={item.id}>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick(item.id)}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`relative w-full text-left px-4 py-3 text-sm tracking-widest cursor-pointer transition-colors duration-300
+                  ${isActive ? 'text-red-100' : 'text-red-300/70 hover:text-red-100'}`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute inset-0 rounded-md bg-red-900/40 border-l-2 border-red-500"
+                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+                    />
+                  )}
+                  <span className="relative">{item.label}</span>
+                </button>
+              </li>
+            )
+          })}
         </ul>
-
-        {/* Bottom glow effect */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-red-900/20 via-red-900/5 to-transparent pointer-events-none md:rounded-t-3xl"/>
       </nav>
 
-      {/* Mobile Menu Button */}
+      {/* Mobile menu button */}
       <div
-        className={`md:hidden fixed top-6 right-6 z-30 transition-all duration-1000 ${
+        className={`md:hidden fixed top-5 right-5 z-40 transition-opacity duration-1000 ${
           isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
         <button
           type="button"
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="text-red-500 hover:text-red-300 transition-all duration-300 
-          drop-shadow-[0_0_12px_rgba(239,68,68,0.4)] hover:drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]
-          transform hover:scale-125 active:scale-95 cursor-pointer"
+          aria-expanded={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen((open) => !open)}
+          className="grid place-items-center w-12 h-12 rounded-full bg-black/60 border border-red-900/60 text-red-400
+          hover:text-red-200 active:scale-95 transition cursor-pointer"
         >
-          {mobileMenuOpen ? (
-            <X size={32} className="animate-spin" style={{ animationDuration: '300ms' }} />
-          ) : (
-            <Menu size={32} className="hover:rotate-12 transition-transform" />
-          )}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={mobileMenuOpen ? 'close' : 'open'}
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </motion.span>
+          </AnimatePresence>
         </button>
       </div>
 
-      {/* Mobile Menu Backdrop */}
-      {mobileMenuOpen && isVisible && (
-        <div
-          className="md:hidden fixed inset-0 z-10 bg-linear-to-b from-black/40 via-red-950/20 to-black/40 backdrop-blur-sm"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && isVisible && (
-        <div className="md:hidden fixed top-0 right-0 h-screen w-48 z-20 
-        bg-linear-to-b from-black/95 via-red-950/50 to-black/95 
-        border-l-4 border-red-900/60 shadow-2xl shadow-red-900/40 
-        animate-slide-in-right backdrop-blur-lg">
-          
-          {/* Mobile menu glow header */}
-          <div className="h-24 bg-linear-to-b from-red-900/30 to-transparent flex items-center justify-center">
-            <div 
-              className="text-red-500 font-black tracking-wider drop-shadow-lg animate-pulse"
-              style={{ textShadow: '0 0 15px rgba(239, 68, 68, 0.8)' }}
+      {/* Mobile drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && isVisible && (
+          <>
+            <motion.div
+              key="backdrop"
+              className="md:hidden fixed inset-0 z-20 bg-black/60"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.nav
+              key="drawer"
+              aria-label="Sections"
+              className="md:hidden fixed top-0 right-0 h-dvh w-64 z-30 pt-24 px-6
+              bg-linear-to-b from-black via-red-950/80 to-black border-l border-red-900/60"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.35, ease: EASE_OUT }}
             >
-              HAUNTED
-            </div>
-          </div>
-
-          {/* Mobile nav items */}
-          <ul className="flex flex-col gap-4 text-white text-sm p-8">
-            {navItems.map((item, index) => (
-              <li
-                key={item.label}
-                onClick={() => handleNavClick(item.id)}
-                className="group relative cursor-pointer transition-all duration-300 px-4 py-3
-                border-l-3 border-l-red-900/40 hover:border-l-red-500
-                text-red-300 hover:text-red-100 hover:translate-x-2 hover:scale-105
-                hover:bg-red-900/20 rounded-r-lg drop-shadow-md
-                hover:[text-shadow:0_0_10px_rgba(239,68,68,0.6)]"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                {item.label}
-                <div className="absolute right-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full 
-                opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
-              </li>
-            ))}
-          </ul>
-
-          {/* Mobile menu footer glow */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-red-900/20 to-transparent" />
-        </div>
-      )}
+              <div className="text-red-500 font-black tracking-[0.25em] text-glow mb-8 px-4">HAUNTED</div>
+              <ul className="flex flex-col gap-1">
+                {navItems.map((item, index) => (
+                  <motion.li
+                    key={item.id}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.08 + index * 0.05, duration: 0.3 }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleNavClick(item.id)}
+                      className={`w-full text-left px-4 py-3 rounded-md text-sm tracking-widest border-l-2 cursor-pointer transition-colors
+                      ${active === item.id
+                        ? 'border-red-500 bg-red-900/40 text-red-100'
+                        : 'border-transparent text-red-300/80 hover:bg-red-900/20 hover:text-red-100'}`}
+                    >
+                      {item.label}
+                    </button>
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.nav>
+          </>
+        )}
+      </AnimatePresence>
     </>
   )
 }

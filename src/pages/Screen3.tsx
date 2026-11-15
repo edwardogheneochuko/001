@@ -1,37 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Volume2, VolumeX, Play, Pause } from 'lucide-react';
 import useAudioEngine from '@/hooks/useAudioEngine';
+import { fadeUp, inView, stagger } from '@/lib/motion';
 
-type AudioControlProps = {
-  playing: boolean;
-  muted: boolean;
-  onTogglePlay: () => void;
-  onToggleMute: () => void;
+const MAX_DPR = 1.5;
+const MAX_PARTICLES = 220;
+const HUE_MIN = 10;
+const HUE_MAX = 80;
+const HUE_STEP = 5;
+const SPRITE_SIZE = 64;
+
+/** Pre-render one soft glow per hue bucket, instead of building a gradient per particle per frame. */
+const buildSprites = () => {
+  const sprites = new Map<number, HTMLCanvasElement>();
+  for (let hue = HUE_MIN; hue <= HUE_MAX; hue += HUE_STEP) {
+    const c = document.createElement('canvas');
+    c.width = c.height = SPRITE_SIZE;
+    const g = c.getContext('2d');
+    if (!g) continue;
+    const r = SPRITE_SIZE / 2;
+    const grad = g.createRadialGradient(r, r, 0, r, r, r);
+    grad.addColorStop(0, `hsla(${hue},90%,60%,0.9)`);
+    grad.addColorStop(0.2, `hsla(${hue},90%,50%,0.35)`);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, SPRITE_SIZE, SPRITE_SIZE);
+    sprites.set(hue, c);
+  }
+  return sprites;
 };
 
-const AudioControl = ({ playing, muted, onTogglePlay, onToggleMute }: AudioControlProps) => (
-  <div className="flex flex-wrap gap-2 sm:gap-4">
-    <button
-      type="button"
-      onClick={onTogglePlay}
-      className="px-3 sm:px-4 py-2 bg-red-900/60 hover:bg-red-800 text-red-100 rounded-md border border-red-700 text-sm sm:text-base cursor-pointer"
-    >
-      {playing ? 'Pause' : 'Play'}
-    </button>
-    <button
-      type="button"
-      onClick={onToggleMute}
-      disabled={!playing}
-      className="px-3 py-2 bg-red-900/40 hover:bg-red-800 text-red-200 rounded-md border border-red-700 text-sm sm:text-base cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {muted ? 'Unmute' : 'Mute'}
-    </button>
-  </div>
-);
-
-const fxButton =
-  'px-2 sm:px-3 py-2 bg-red-800/60 hover:bg-red-700 text-white rounded-md border border-red-700 text-sm sm:text-base cursor-pointer';
+const controlButton =
+  'inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md border border-red-800/80 bg-red-950/60 text-red-100 ' +
+  'text-sm sm:text-base hover:bg-red-800/80 hover:border-red-500 active:scale-95 transition cursor-pointer ' +
+  'disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100';
 
 const Page3 = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const {
     analyserRef,
@@ -50,31 +56,39 @@ const Page3 = () => {
   const [scaryVoice, setScaryVoice] = useState(true);
 
   useEffect(() => {
+    const section = sectionRef.current;
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
+    if (!section || !canvas || !ctx) return;
 
-    let width = (canvas.width = canvas.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.clientHeight || window.innerHeight);
+    const sprites = buildSprites();
+    let width = 0;
+    let height = 0;
 
     const resize = () => {
-      width = canvas.width = canvas.clientWidth || window.innerWidth;
-      height = canvas.height = canvas.clientHeight || window.innerHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
-    window.addEventListener('resize', resize);
+    resize();
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(canvas);
 
     type Particle = { x: number; y: number; vx: number; vy: number; size: number; hue: number };
-    const COUNT = Math.max(60, Math.floor((width * height) / 8000));
-    const particles: Particle[] = Array.from({ length: COUNT }, () => ({
+    const count = Math.min(MAX_PARTICLES, Math.max(60, Math.floor((width * height) / 8000)));
+    const particles: Particle[] = Array.from({ length: count }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       vx: (Math.random() - 0.5) * 0.6,
       vy: (Math.random() - 0.5) * 0.6,
       size: 1 + Math.random() * 3,
-      hue: 10 + Math.random() * 40,
+      hue: HUE_MIN + Math.random() * 40,
     }));
 
-    // Pointer events cover mouse, touch and pen
+    // Pointer: mouse, touch and pen. Presses only count inside this section.
     const pointer = { x: width / 2, y: height / 2, active: false };
     const toLocal = (e: PointerEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -83,22 +97,26 @@ const Page3 = () => {
     };
     const onMove = (e: PointerEvent) => toLocal(e);
     const onDown = (e: PointerEvent) => {
+      // Ignore presses on the controls
+      if ((e.target as HTMLElement).closest('button, input, label, form')) return;
       toLocal(e);
       pointer.active = true;
     };
     const onUp = () => {
       pointer.active = false;
     };
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerdown', onDown);
+    section.addEventListener('pointermove', onMove);
+    section.addEventListener('pointerdown', onDown);
     window.addEventListener('pointerup', onUp);
     window.addEventListener('pointercancel', onUp);
 
     let audioLevel = 0;
     let frame = 0;
+    let running = false;
     let data: Uint8Array<ArrayBuffer> | null = null;
 
     const draw = () => {
+      ctx.globalCompositeOperation = 'source-over';
       ctx.clearRect(0, 0, width, height);
       ctx.globalCompositeOperation = 'lighter';
 
@@ -110,7 +128,8 @@ const Page3 = () => {
         analyser.getByteFrequencyData(data);
         let sum = 0;
         for (let i = 0; i < data.length; i++) sum += data[i];
-        audioLevel = sum / data.length / 255;
+        // Smooth the level so the field swells instead of twitching
+        audioLevel += (sum / data.length / 255 - audioLevel) * 0.2;
       } else {
         audioLevel *= 0.95;
       }
@@ -120,14 +139,14 @@ const Page3 = () => {
         p.y += p.vy * (1 + audioLevel * 2);
 
         if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
+        else if (p.x > width) p.x = 0;
         if (p.y < 0) p.y = height;
-        if (p.y > height) p.y = 0;
+        else if (p.y > height) p.y = 0;
 
-        const dx = p.x - pointer.x;
-        const dy = p.y - pointer.y;
-        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
         if (pointer.active) {
+          const dx = p.x - pointer.x;
+          const dy = p.y - pointer.y;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
           const force = Math.min(80, 120 / dist);
           p.vx += (dx / dist) * force * 0.002;
           p.vy += (dy / dist) * force * 0.002;
@@ -135,32 +154,38 @@ const Page3 = () => {
           p.vx += (Math.random() - 0.5) * 0.01;
           p.vy += (Math.random() - 0.5) * 0.01;
         }
-        // light damping so particles don't accelerate forever
         p.vx *= 0.995;
         p.vy *= 0.995;
 
-        const size = p.size * (1 + audioLevel * 3);
-        const hue = p.hue + audioLevel * 30;
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, size * 4);
-        grad.addColorStop(0, `hsla(${hue},90%,60%,0.9)`);
-        grad.addColorStop(0.2, `hsla(${hue},90%,50%,0.35)`);
-        grad.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, size * 2.5, 0, Math.PI * 2);
-        ctx.fill();
+        const radius = p.size * 3 * (1 + audioLevel * 3);
+        const hue = Math.min(HUE_MAX, Math.round((p.hue + audioLevel * 30) / HUE_STEP) * HUE_STEP);
+        const sprite = sprites.get(hue);
+        if (sprite) ctx.drawImage(sprite, p.x - radius, p.y - radius, radius * 2, radius * 2);
       }
 
       frame = requestAnimationFrame(draw);
     };
 
-    frame = requestAnimationFrame(draw);
+    const start = () => {
+      if (running) return;
+      running = true;
+      frame = requestAnimationFrame(draw);
+    };
+    const stop = () => {
+      running = false;
+      cancelAnimationFrame(frame);
+    };
+
+    // Only animate while the section is on screen
+    const visibility = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+    visibility.observe(section);
 
     return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerdown', onDown);
+      stop();
+      visibility.disconnect();
+      resizeObserver.disconnect();
+      section.removeEventListener('pointermove', onMove);
+      section.removeEventListener('pointerdown', onDown);
       window.removeEventListener('pointerup', onUp);
       window.removeEventListener('pointercancel', onUp);
     };
@@ -172,59 +197,85 @@ const Page3 = () => {
   };
 
   return (
-    <div
+    <section
+      ref={sectionRef}
       id="nightmares"
-      className="w-screen h-screen relative overflow-hidden bg-linear-to-br from-black via-gray-950 to-red-950"
+      className="relative min-h-dvh w-full overflow-hidden bg-linear-to-br from-black via-gray-950 to-red-950"
     >
       <div className="absolute inset-0 bg-radial from-red-900/10 via-transparent to-black pointer-events-none" />
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" aria-hidden="true" />
 
-      <div className="absolute left-4 sm:left-8 top-8 sm:top-12 max-w-full sm:max-w-lg text-white pr-4">
-        <h1 className="text-3xl sm:text-6xl font-black text-red-400 tracking-wider drop-shadow-lg">THE CHAMBER</h1>
-        <p className="mt-2 sm:mt-4 text-sm sm:text-lg text-gray-300/90">
-          An atmospheric room — audio-reactive particles and ambient sound.
-        </p>
+      <div className="relative flex min-h-dvh items-start sm:items-center px-4 sm:px-10 py-20">
+        <motion.div
+          variants={stagger(0.08)}
+          {...inView}
+          className="w-full max-w-lg rounded-2xl border border-red-900/60 bg-black/65 p-5 sm:p-8 text-white shadow-2xl"
+        >
+          <motion.h2 variants={fadeUp} className="text-4xl sm:text-6xl font-black text-red-400 tracking-wider text-glow">
+            THE CHAMBER
+          </motion.h2>
+          <motion.p variants={fadeUp} className="mt-2 sm:mt-3 text-sm sm:text-lg text-gray-300/90">
+            An atmospheric room — audio-reactive particles and ambient sound.
+          </motion.p>
 
-        <div className="mt-4 flex flex-col gap-3">
-          <AudioControl
-            playing={ambientPlaying}
-            muted={ambientMuted}
-            onTogglePlay={toggleAmbient}
-            onToggleMute={toggleAmbientMute}
-          />
+          <motion.div variants={fadeUp} className="mt-6 flex flex-wrap gap-2 sm:gap-3">
+            <button type="button" onClick={toggleAmbient} className={controlButton} aria-pressed={ambientPlaying}>
+              {ambientPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {ambientPlaying ? 'Pause' : 'Play'}
+            </button>
+            <button
+              type="button"
+              onClick={toggleAmbientMute}
+              disabled={!ambientPlaying}
+              className={controlButton}
+              aria-pressed={ambientMuted}
+            >
+              {ambientMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              {ambientMuted ? 'Unmute' : 'Mute'}
+            </button>
+          </motion.div>
 
-          <div className="flex flex-wrap gap-2 sm:gap-3">
-            <button type="button" onClick={playScreech} className={fxButton}>Screech</button>
-            <button type="button" onClick={playThump} className={fxButton}>Thump</button>
-            <button type="button" onClick={playWhisper} className={fxButton}>Whisper</button>
-          </div>
+          <motion.div variants={fadeUp} className="mt-4">
+            <p className="mb-2 text-xs uppercase tracking-[0.2em] text-red-300/70">Effects</p>
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <button type="button" onClick={playScreech} className={controlButton}>Screech</button>
+              <button type="button" onClick={playThump} className={controlButton}>Thump</button>
+              <button type="button" onClick={playWhisper} className={controlButton}>Whisper</button>
+            </div>
+          </motion.div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <form onSubmit={handleSpeak} className="flex flex-nowrap gap-2 mr-5">
+          <motion.form variants={fadeUp} onSubmit={handleSpeak} className="mt-5">
+            <label htmlFor="tts" className="mb-2 block text-xs uppercase tracking-[0.2em] text-red-300/70">
+              Speak
+            </label>
+            <div className="flex gap-2">
               <input
+                id="tts"
                 value={ttsText}
                 onChange={(e) => setTtsText(e.target.value)}
                 placeholder="Type something..."
-                aria-label="Text to speak"
-                className="flex-1 min-w-0 px-2 sm:px-3 py-2 rounded-md bg-black/40 border border-red-700 text-white text-sm sm:text-base"
+                className="flex-1 min-w-0 px-3 py-2 rounded-md bg-black/60 border border-red-800 text-white text-sm sm:text-base
+                placeholder:text-gray-500 focus:border-red-500 focus:outline-none transition-colors"
               />
-              <button
-                type="submit"
-                disabled={!ttsText.trim()}
-                className="px-2 sm:px-3 py-2 cursor-pointer bg-red-700 hover:bg-red-600 text-white rounded-md border
-                 border-red-600 text-sm sm:text-base flex-shrink-0 duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <button type="submit" disabled={!ttsText.trim()} className={`${controlButton} bg-red-700/80 shrink-0`}>
                 Speak
               </button>
-            </form>
-            <label className="flex items-center gap-2 text-sm text-red-200">
-              <input type="checkbox" checked={scaryVoice} onChange={(e) => setScaryVoice(e.target.checked)} />
-              Scary Voice
+            </div>
+            <label className="mt-3 inline-flex items-center gap-2 text-sm text-red-200 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={scaryVoice}
+                onChange={(e) => setScaryVoice(e.target.checked)}
+                className="accent-red-600 w-4 h-4"
+              />
+              Scary voice
             </label>
-          </div>
+          </motion.form>
 
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-            <label htmlFor="master-volume" className="text-sm text-red-200/70">Master Volume</label>
+          <motion.div variants={fadeUp} className="mt-5 flex items-center gap-3">
+            <label htmlFor="master-volume" className="text-xs uppercase tracking-[0.2em] text-red-300/70 shrink-0">
+              Volume
+            </label>
             <input
               id="master-volume"
               type="range"
@@ -233,16 +284,16 @@ const Page3 = () => {
               step={0.01}
               value={masterVolume}
               onChange={(e) => setMasterGain(Number(e.target.value))}
-              className="w-2/4 sm:w-40"
+              className="w-full accent-red-600 cursor-pointer"
             />
-          </div>
-        </div>
+          </motion.div>
 
-        <div className="mt-4 text-xs sm:text-sm text-red-200/70 font-mono">
-          Tip: press Play, then click (or touch) and hold to disturb the field. Use the buttons to trigger noises or type and Speak.
-        </div>
+          <motion.p variants={fadeUp} className="mt-5 text-xs sm:text-sm text-red-200/60 font-mono">
+            Tip: press Play, then press and hold anywhere outside this panel to disturb the field.
+          </motion.p>
+        </motion.div>
       </div>
-    </div>
+    </section>
   );
 };
 
