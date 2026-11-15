@@ -1,10 +1,45 @@
-/* input.css */
+@import "tailwindcss";
+
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
 
-@import "tailwindcss";
-body {
-  font-family: 'Poppins', sans-serif;
+  /* Slow, smooth "breathing" instead of hard flicker */
+  --animate-breathe: breathe 5s ease-in-out infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-drift: drift 24s ease-in-out infinite alternate;
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50% { transform: translate3d(0, -10px, 0); }
+  }
+
+  @keyframes drift {
+    from { transform: scale(1) translate3d(0, 0, 0); }
+    to { transform: scale(1.08) translate3d(-1.5%, -1%, 0); }
+  }
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased;
+  }
+
+  ::selection {
+    background: rgb(185 28 28 / 0.6);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(239 68 68);
+    outline-offset: 2px;
+  }
 }
 
 @layer utilities {
@@ -17,48 +52,19 @@ body {
     display: none;
   }
 
-  @keyframes slideUp {
-    from {
-      transform: translateY(384px);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
+  .text-glow {
+    text-shadow: 0 0 24px rgb(239 68 68 / 0.55), 0 0 60px rgb(0 0 0 / 0.8);
   }
+}
 
-  @keyframes slideDown {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes slideInRight {
-    from {
-      transform: translateX(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  .animate-slide-up {
-    animation: slideUp 1s ease-out forwards;
-  }
-
-  .animate-slide-down {
-    animation: slideDown 0.5s ease-out forwards;
-  }
-
-  .animate-slide-in-right {
-    animation: slideInRight 0.5s ease-out forwards;
+/* Respect the OS "reduce motion" setting for CSS animations and transitions */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

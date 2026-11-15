@@ -149,18 +149,21 @@ const Hero = () => {
   };
 
   return (
-    <div className="px-4 sm:px-6 md:px-12 lg:px-20 py-10 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 items-center
-    bg-linear-to-br from-gray-50 to-gray-100 dark:from-neutral-900 dark:to-neutral-800">
+    <motion.section
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="px-4 sm:px-6 md:px-12 lg:px-20 py-14 md:py-20 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center
+    bg-linear-to-br from-gray-50 to-gray-100 dark:from-neutral-900 dark:to-neutral-950">
 
       <div className="space-y-5 md:space-y-6">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <motion.h2
           className="text-3xl sm:text-4xl md:text-5xl font-bold flex items-center gap-2 md:gap-3 text-gray-900 dark:text-white"
         >
           <MessageCircle className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
           Depression
-        </motion.h1>
+        </motion.h2>
 
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 flex items-start gap-2">
           <User className="w-4 h-4 mt-1" />
@@ -259,7 +262,7 @@ const Hero = () => {
         )}
       </div>
 
-      <div className="relative h-[250px] sm:h-[300px] md:h-[500px] overflow-hidden rounded-xl shadow-xl">
+      <div className="relative h-64 sm:h-80 md:h-[500px] overflow-hidden rounded-2xl shadow-xl bg-gray-200 dark:bg-neutral-800 touch-pan-y">
 
         <AnimatePresence initial={false} custom={direction}>
           <motion.img
@@ -267,13 +270,13 @@ const Hero = () => {
             src={images[index]}
             alt=""
             draggable={false}
-            className="absolute w-full h-full object-cover"
+            className="absolute w-full h-full object-cover cursor-grab active:cursor-grabbing"
             custom={direction}
             variants={variants}
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
             onDragEnd={handleDragEnd}
@@ -284,7 +287,7 @@ const Hero = () => {
           type="button"
           aria-label="Previous image"
           onClick={() => paginate(-1)}
-          className="absolute top-1/2 left-2 md:left-4 -translate-y-1/2 bg-black/50 text-white p-2 md:p-3 rounded-full"
+          className="absolute top-1/2 left-2 md:left-4 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 md:p-3 rounded-full transition-colors cursor-pointer"
         >
           <ChevronLeft size={18} />
         </button>
@@ -293,12 +296,12 @@ const Hero = () => {
           type="button"
           aria-label="Next image"
           onClick={() => paginate(1)}
-          className="absolute top-1/2 right-2 md:right-4 -translate-y-1/2 bg-black/50 text-white p-2 md:p-3 rounded-full"
+          className="absolute top-1/2 right-2 md:right-4 -translate-y-1/2 bg-black/50 hover:bg-black/75 text-white p-2 md:p-3 rounded-full transition-colors cursor-pointer"
         >
           <ChevronRight size={18} />
         </button>
       </div>
-    </div>
+    </motion.section>
   );
 };
 

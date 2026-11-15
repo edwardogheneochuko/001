@@ -5,50 +5,33 @@ interface SlideCardProps {
   totalSlides: number;
 }
 
-const SlideCard: React.FC<SlideCardProps> = ({ title, description, slideNumber, totalSlides }) => {
+const SlideCard = ({ title, description, slideNumber, totalSlides }: SlideCardProps) => {
   return (
-    <div className="relative mb-12 perspective">
-      <div 
-        className="relative border-3 border-red-900/60 bg-linear-to-br from-gray-900/90 to-black/95 
-        p-12 rounded-xl backdrop-blur-md shadow-2xl transform transition-all duration-500
-        hover:shadow-[0_0_60px_rgba(239,68,68,0.5)] hover:border-red-500 hover:scale-105"
-        style={{ textShadow: '0 0 20px rgba(0,0,0,0.9)' }}
+    <div className="relative h-full pb-6 select-none">
+      <div
+        className="relative h-full flex flex-col justify-center border border-red-900/70 bg-linear-to-br from-gray-900/90 to-black/95
+        px-6 py-10 sm:p-12 rounded-xl shadow-2xl transition-[border-color,box-shadow] duration-500
+        hover:border-red-600/80 hover:shadow-[0_0_50px_rgba(239,68,68,0.25)]"
       >
-        {/* Slide number badge */}
-        <div 
-          className="absolute -top-4 -left-4 w-12 h-12 bg-linear-to-br from-red-600 to-red-900 
-          rounded-full flex items-center justify-center font-black text-white drop-shadow-xl text-sm"
+        <div
+          className="absolute -top-4 -left-3 sm:-left-4 min-w-12 h-10 px-3 bg-linear-to-br from-red-600 to-red-900
+          rounded-full flex items-center justify-center font-bold text-white text-xs tracking-wider shadow-lg"
         >
           {slideNumber}/{totalSlides}
         </div>
 
-        {/* Creepy corner accents */}
-        <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-red-500 rounded-tr-lg" />
-        <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-red-500 rounded-bl-lg" />
-        
-        {/* Inner animated glow */}
-        <div 
-          className="absolute inset-0 rounded-xl bg-linear-to-br from-red-600/10 to-transparent 
-          opacity-50 animate-pulse pointer-events-none" 
-        />
+        <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-red-500/80 rounded-tr-lg" />
+        <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-red-500/80 rounded-bl-lg" />
 
-        {/* Slide content */}
-        <div className="relative z-10">
-          <h1 
-            className="text-6xl sm:text-7xl font-black mb-6 tracking-widest text-red-400 drop-shadow-2xl 
-            animate-bounce"
-            style={{ textShadow: '0 0 30px rgba(239, 68, 68, 0.8)' }}
-          >
-            {title.toUpperCase()}
-          </h1>
-          
-          <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed drop-shadow-lg italic font-light line-clamp-4">
-            "{description}"
-          </p>
+        <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black mb-5 tracking-wider text-red-400 text-glow break-words">
+          {title.toUpperCase()}
+        </h2>
 
-          {/* Divider */}
-          <div className="mt-8 h-px bg-linear-to-r from-red-900 via-red-600 to-red-900 opacity-70" />
-        </div>
+        <p className="text-lg sm:text-2xl text-gray-200 leading-relaxed italic font-light">
+          “{description}”
+        </p>
+
+        <div className="mt-8 h-px bg-linear-to-r from-red-900 via-red-600 to-red-900 opacity-70" />
       </div>
     </div>
   );

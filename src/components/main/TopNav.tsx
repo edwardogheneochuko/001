@@ -17,7 +17,17 @@ import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { useTheme } from "@/context/theme";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+
+const dropdownClass =
+  "absolute right-0 mt-2 w-52 origin-top-right bg-white dark:bg-neutral-800 shadow-lg ring-1 ring-black/5 dark:ring-white/10 rounded-lg overflow-hidden text-gray-700 dark:text-gray-200";
+
+const dropdownMotion = {
+  initial: { opacity: 0, scale: 0.95, y: -4 },
+  animate: { opacity: 1, scale: 1, y: 0 },
+  exit: { opacity: 0, scale: 0.95, y: -4 },
+  transition: { duration: 0.15 },
+};
 
 const CRISIS_SUPPORT_URL = "https://findahelpline.com";
 
@@ -180,11 +190,13 @@ const TopNav = ({ onSearch }: TopNavProps) => {
   );
 
   return (
-    <header className="shadow-sm bg-gray-50 dark:bg-neutral-900 dark:text-white fixed top-0 left-0 w-full z-50">
-      {/* Click-away layer for open dropdowns */}
-      {openMenu && (
-        <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setOpenMenu(null)} />
-      )}
+    <>
+    {/* Click-away layer for open dropdowns. Lives outside the header because
+        backdrop-blur makes the header the containing block for fixed children. */}
+    {openMenu && (
+      <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setOpenMenu(null)} />
+    )}
+    <header className="fixed top-0 left-0 w-full z-50 border-b border-black/5 dark:border-white/10 bg-gray-50/85 dark:bg-neutral-950/85 backdrop-blur-md text-gray-900 dark:text-white transition-colors">
 
       <div className="flex items-center justify-between px-4 md:px-9 py-4">
         <h1 className="text-3xl md:text-4xl font-mono flex items-center gap-1 text-red-900 dark:text-red-400">
@@ -211,11 +223,13 @@ const TopNav = ({ onSearch }: TopNavProps) => {
               <PersonStanding /> <span className="truncate">{accountLabel}</span> <ChevronDown size={16} />
             </button>
 
-            {openMenu === "account" && (
-              <ul className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 shadow-md rounded-md overflow-hidden text-gray-700 dark:text-gray-200">
-                {accountItems}
-              </ul>
-            )}
+            <AnimatePresence>
+              {openMenu === "account" && (
+                <motion.ul {...dropdownMotion} className={dropdownClass}>
+                  {accountItems}
+                </motion.ul>
+              )}
+            </AnimatePresence>
           </div>
 
           <div className="relative z-50">
@@ -229,11 +243,13 @@ const TopNav = ({ onSearch }: TopNavProps) => {
               <HelpCircle /> Help <ChevronDown size={16} />
             </button>
 
-            {openMenu === "help" && (
-              <ul className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 shadow-md rounded-md overflow-hidden text-gray-700 dark:text-gray-200">
-                {helpItems}
-              </ul>
-            )}
+            <AnimatePresence>
+              {openMenu === "help" && (
+                <motion.ul {...dropdownMotion} className={dropdownClass}>
+                  {helpItems}
+                </motion.ul>
+              )}
+            </AnimatePresence>
           </div>
 
           <ThemeToggle />
@@ -248,14 +264,34 @@ const TopNav = ({ onSearch }: TopNavProps) => {
             className="cursor-pointer"
             onClick={() => setMobileMenu(!mobileMenu)}
           >
-            {mobileMenu ? <X size={28} /> : <Menu size={28} />}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={mobileMenu ? "close" : "open"}
+                className="block"
+                initial={{ rotate: -90, opacity: 0 }}
+                animate={{ rotate: 0, opacity: 1 }}
+                exit={{ rotate: 90, opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                {mobileMenu ? <X size={28} /> : <Menu size={28} />}
+              </motion.span>
+            </AnimatePresence>
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
+      <AnimatePresence initial={false}>
       {mobileMenu && (
-        <div className="md:hidden bg-gray-100 dark:bg-gray-800 px-4 pb-4 space-y-4 border-t border-gray-200 dark:border-gray-700">
+        <motion.div
+          key="mobile-menu"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="md:hidden overflow-hidden bg-gray-100 dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800"
+        >
+        <div className="px-4 pb-4 space-y-4 max-h-[calc(100dvh-5rem)] overflow-y-auto">
           <SearchForm
             onSearch={handleSearch}
             className="mt-5"
@@ -285,8 +321,11 @@ const TopNav = ({ onSearch }: TopNavProps) => {
             <ThemeToggle />
           </div>
         </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </header>
+    </>
   );
 };
 
