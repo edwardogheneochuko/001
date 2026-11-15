@@ -36,9 +36,9 @@ const Page2 = () => {
   const currentItem = scaryContent[currentSlide];
 
   return (
-    <div id='whispers' className="w-screen h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-950 to-red-950">
+    <div id='whispers' className="w-screen h-screen relative overflow-hidden bg-linear-to-br from-black via-gray-950 to-red-950">
 
-      <div className="absolute inset-0 bg-gradient-radial from-red-900/10 via-transparent to-black pointer-events-none" />
+      <div className="absolute inset-0 bg-radial from-red-900/10 via-transparent to-black pointer-events-none" />
       
 
       <BackgroundImage src={clown} alt="Scary Clown" />

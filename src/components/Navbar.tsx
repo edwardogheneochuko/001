@@ -29,12 +29,12 @@ const Navbar = ({ isVisible }: NavbarProps) => {
       {/* Desktop Navbar */}
       <nav
         className={`hidden md:fixed md:top-0 md:right-0 md:h-screen md:w-56 md:z-20 md:flex md:flex-col md:items-center md:justify-center md:gap-8 md:transition-all md:duration-1000 md:backdrop-blur-lg
-        md:bg-gradient-to-b md:from-black/90 md:via-red-950/40 md:to-black/90 
+        md:bg-linear-to-b md:from-black/90 md:via-red-950/40 md:to-black/90 
         md:border-l-4 md:border-red-900/60 md:shadow-2xl md:shadow-red-900/20
         ${isVisible ? 'md:opacity-100' : 'md:opacity-0 md:pointer-events-none'}`}
       >
         {/* Decorative top glow */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-red-900/20 via-red-900/5 to-transparent pointer-events-none md:rounded-b-3xl"/>
+        <div className="absolute top-0 left-0 right-0 h-32 bg-linear-to-b from-red-900/20 via-red-900/5 to-transparent pointer-events-none md:rounded-b-3xl"/>
         
         {/* Logo with glow */}
         <div 
@@ -54,7 +54,7 @@ const Navbar = ({ isVisible }: NavbarProps) => {
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {/* Background glow on hover */}
-              <div className="absolute -inset-3 bg-gradient-to-r from-red-900/0 via-red-600/0 to-red-900/0 
+              <div className="absolute -inset-3 bg-linear-to-r from-red-900/0 via-red-600/0 to-red-900/0 
               group-hover:from-red-900/30 group-hover:via-red-600/20 group-hover:to-red-900/30 
               rounded-lg transition-all duration-300 group-hover:blur-md opacity-0 group-hover:opacity-100" />
               
@@ -62,10 +62,7 @@ const Navbar = ({ isVisible }: NavbarProps) => {
               <span className="relative block px-4 py-2 text-red-300 group-hover:text-red-100 
               transition-all duration-300 group-hover:translate-x-3 group-hover:scale-110 
               border-l-2 border-l-red-900/40 group-hover:border-l-red-500 
-              drop-shadow-lg group-hover:drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]"
-              style={{ 
-                textShadow: 'group-hover:0 0 15px rgba(239, 68, 68, 0.6)' 
-              }}>
+              drop-shadow-lg group-hover:drop-shadow-[0_0_12px_rgba(239,68,68,0.6)]">
                 {item.label}
               </span>
 
@@ -79,7 +76,7 @@ const Navbar = ({ isVisible }: NavbarProps) => {
         </ul>
 
         {/* Bottom glow effect */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-red-900/20 via-red-900/5 to-transparent pointer-events-none md:rounded-t-3xl"/>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-red-900/20 via-red-900/5 to-transparent pointer-events-none md:rounded-t-3xl"/>
       </nav>
 
       {/* Mobile Menu Button */}
@@ -89,6 +86,8 @@ const Navbar = ({ isVisible }: NavbarProps) => {
         }`}
       >
         <button
+          type="button"
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           className="text-red-500 hover:text-red-300 transition-all duration-300 
           drop-shadow-[0_0_12px_rgba(239,68,68,0.4)] hover:drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]
@@ -105,7 +104,7 @@ const Navbar = ({ isVisible }: NavbarProps) => {
       {/* Mobile Menu Backdrop */}
       {mobileMenuOpen && isVisible && (
         <div
-          className="md:hidden fixed inset-0 z-10 bg-gradient-to-b from-black/40 via-red-950/20 to-black/40 backdrop-blur-sm"
+          className="md:hidden fixed inset-0 z-10 bg-linear-to-b from-black/40 via-red-950/20 to-black/40 backdrop-blur-sm"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -113,12 +112,12 @@ const Navbar = ({ isVisible }: NavbarProps) => {
       {/* Mobile Menu */}
       {mobileMenuOpen && isVisible && (
         <div className="md:hidden fixed top-0 right-0 h-screen w-48 z-20 
-        bg-gradient-to-b from-black/95 via-red-950/50 to-black/95 
+        bg-linear-to-b from-black/95 via-red-950/50 to-black/95 
         border-l-4 border-red-900/60 shadow-2xl shadow-red-900/40 
         animate-slide-in-right backdrop-blur-lg">
           
           {/* Mobile menu glow header */}
-          <div className="h-24 bg-gradient-to-b from-red-900/30 to-transparent flex items-center justify-center">
+          <div className="h-24 bg-linear-to-b from-red-900/30 to-transparent flex items-center justify-center">
             <div 
               className="text-red-500 font-black tracking-wider drop-shadow-lg animate-pulse"
               style={{ textShadow: '0 0 15px rgba(239, 68, 68, 0.8)' }}
@@ -134,13 +133,11 @@ const Navbar = ({ isVisible }: NavbarProps) => {
                 key={item.label}
                 onClick={() => handleNavClick(item.id)}
                 className="group relative cursor-pointer transition-all duration-300 px-4 py-3
-                border-l-3 border-l-red-900/40 group-hover:border-l-red-500
-                text-red-300 group-hover:text-red-100 group-hover:translate-x-2 group-hover:scale-105
-                hover:bg-red-900/20 rounded-r-lg drop-shadow-md"
-                style={{ 
-                  animationDelay: `${index * 50}ms`,
-                  textShadow: 'group-hover:0 0 10px rgba(239, 68, 68, 0.6)'
-                }}
+                border-l-3 border-l-red-900/40 hover:border-l-red-500
+                text-red-300 hover:text-red-100 hover:translate-x-2 hover:scale-105
+                hover:bg-red-900/20 rounded-r-lg drop-shadow-md
+                hover:[text-shadow:0_0_10px_rgba(239,68,68,0.6)]"
+                style={{ animationDelay: `${index * 50}ms` }}
               >
                 {item.label}
                 <div className="absolute right-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500 rounded-full 
@@ -150,7 +147,7 @@ const Navbar = ({ isVisible }: NavbarProps) => {
           </ul>
 
           {/* Mobile menu footer glow */}
-          <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-red-900/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-16 bg-linear-to-t from-red-900/20 to-transparent" />
         </div>
       )}
     </>

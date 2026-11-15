@@ -1,4 +1,3 @@
-// src/pages/LandingPage.tsx
 import { useState, useEffect, useRef } from "react"
 import pumpkin from "../assets/pumpkin.mp4"
 import Navbar from "@/components/Navbar"
@@ -10,7 +9,6 @@ import Footer from "@/components/Footer"
 
 const LandingPage = () => {
   const [showContent, setShowContent] = useState(false)
-  const [blurVideo, setBlurVideo] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
   useEffect(() => {
@@ -24,10 +22,7 @@ const LandingPage = () => {
 
     playVideo()
 
-    const timer = setTimeout(() => {
-      setShowContent(true)
-      setBlurVideo(true)
-    }, 5000)
+    const timer = setTimeout(() => setShowContent(true), 5000)
 
     return () => clearTimeout(timer)
   }, [])
@@ -39,7 +34,7 @@ const LandingPage = () => {
       <video
         ref={videoRef}
         className={`fixed top-0 left-0 w-full h-full object-cover transition-all duration-1000 ${
-          blurVideo ? "blur-sm" : ""
+          showContent ? "blur-sm" : ""
         }`}
         autoPlay
         loop
@@ -49,6 +44,17 @@ const LandingPage = () => {
       >
         <source src={pumpkin} type="video/mp4" />
       </video>
+
+      {!showContent && (
+        <button
+          type="button"
+          onClick={() => setShowContent(true)}
+          className="fixed bottom-8 right-8 z-20 px-4 py-2 rounded-md border border-red-700/70 bg-black/60
+          text-red-300 hover:text-red-100 hover:bg-red-900/60 font-mono text-sm tracking-widest cursor-pointer transition"
+        >
+          SKIP INTRO →
+        </button>
+      )}
 
       {showContent && (
         <div className="relative z-10">

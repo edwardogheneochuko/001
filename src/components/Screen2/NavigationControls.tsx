@@ -16,7 +16,7 @@ const NavigationControls: React.FC<NavigationControlsProps> = ({
       {/* Previous button */}
       <button 
         onClick={onPrev}
-        className="group px-6 py-3 bg-gradient-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
+        className="group px-6 py-3 bg-linear-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
         border border-red-600/50 hover:border-red-400 rounded-lg transition-all duration-300 
         transform hover:scale-110 active:scale-95 cursor-pointer"
       >
@@ -35,7 +35,7 @@ const NavigationControls: React.FC<NavigationControlsProps> = ({
       {/* Next button */}
       <button 
         onClick={onNext}
-        className="group px-6 py-3 bg-gradient-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
+        className="group px-6 py-3 bg-linear-to-r from-red-900/60 to-red-950/60 hover:from-red-700 hover:to-red-900
         border border-red-600/50 hover:border-red-400 rounded-lg transition-all duration-300 
         transform hover:scale-110 active:scale-95 cursor-pointer"
       >

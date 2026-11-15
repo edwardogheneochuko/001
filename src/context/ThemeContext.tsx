@@ -1,22 +1,28 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import type { ReactNode } from "react"
+import { ThemeContext, THEME_STORAGE_KEY } from "./theme"
+import type { Theme } from "./theme"
 
-type Theme = "light" | "dark"
-
-type ThemeContextType = {
-  theme: Theme
-  toggleTheme: () => void
+const getInitialTheme = (): Theme => {
+  try {
+    const stored = localStorage.getItem(THEME_STORAGE_KEY)
+    if (stored === "light" || stored === "dark") return stored
+  } catch {
+    // localStorage can be unavailable (private mode, blocked storage)
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
-
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem("theme") as Theme) || "light"
-  })
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark")
-    localStorage.setItem("theme", theme)
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, theme)
+    } catch {
+      // ignore storage failures; the theme still applies for this session
+    }
   }, [theme])
 
   const toggleTheme = () => {
@@ -28,10 +34,4 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </ThemeContext.Provider>
   )
-}
-
-export const useTheme = () => {
-  const context = useContext(ThemeContext)
-  if (!context) throw new Error("useTheme must be used within ThemeProvider")
-  return context
 }

@@ -9,14 +9,14 @@ const SlideCard: React.FC<SlideCardProps> = ({ title, description, slideNumber, 
   return (
     <div className="relative mb-12 perspective">
       <div 
-        className="relative border-3 border-red-900/60 bg-gradient-to-br from-gray-900/90 to-black/95 
+        className="relative border-3 border-red-900/60 bg-linear-to-br from-gray-900/90 to-black/95 
         p-12 rounded-xl backdrop-blur-md shadow-2xl transform transition-all duration-500
         hover:shadow-[0_0_60px_rgba(239,68,68,0.5)] hover:border-red-500 hover:scale-105"
         style={{ textShadow: '0 0 20px rgba(0,0,0,0.9)' }}
       >
         {/* Slide number badge */}
         <div 
-          className="absolute -top-4 -left-4 w-12 h-12 bg-gradient-to-br from-red-600 to-red-900 
+          className="absolute -top-4 -left-4 w-12 h-12 bg-linear-to-br from-red-600 to-red-900 
           rounded-full flex items-center justify-center font-black text-white drop-shadow-xl text-sm"
         >
           {slideNumber}/{totalSlides}
@@ -28,7 +28,7 @@ const SlideCard: React.FC<SlideCardProps> = ({ title, description, slideNumber, 
         
         {/* Inner animated glow */}
         <div 
-          className="absolute inset-0 rounded-xl bg-gradient-to-br from-red-600/10 to-transparent 
+          className="absolute inset-0 rounded-xl bg-linear-to-br from-red-600/10 to-transparent 
           opacity-50 animate-pulse pointer-events-none" 
         />
 
@@ -47,7 +47,7 @@ const SlideCard: React.FC<SlideCardProps> = ({ title, description, slideNumber, 
           </p>
 
           {/* Divider */}
-          <div className="mt-8 h-px bg-gradient-to-r from-red-900 via-red-600 to-red-900 opacity-70" />
+          <div className="mt-8 h-px bg-linear-to-r from-red-900 via-red-600 to-red-900 opacity-70" />
         </div>
       </div>
     </div>
